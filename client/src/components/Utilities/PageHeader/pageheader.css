@@ -1,0 +1,29 @@
+.bookmark-page-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 8rem;
+  gap: 1rem;
+  margin-bottom: 6rem;
+}
+.bookmark-page-header-title {
+  font-size: 3.7rem;
+  text-align: center;
+  text-wrap: wrap;
+  font-family: "Source Serif 4", Georgia, serif;
+}
+.bookmark-page-header-caption {
+  font-size: 1.5rem;
+  text-align: center;
+  text-wrap: wrap;
+}
+.bookmark-page-header-btn {
+  cursor: pointer;
+  margin-top: 1rem;
+  background-color: #7808d0;
+  color: white;
+  font-size: 1rem;
+  padding: 0.8rem;
+  border-radius: 34px;
+  font-weight: bold;
+}

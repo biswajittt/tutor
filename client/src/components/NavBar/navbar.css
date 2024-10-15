@@ -1,0 +1,96 @@
+.bookmark-navbar {
+  /* display: flex; */
+
+  padding: 1rem 1rem 1rem 1rem;
+
+  display: grid;
+  z-index: 9996;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  grid-template-columns: 20px 90px 1fr;
+  grid-template-rows: 100px;
+  -ms-flex-align: center;
+  align-items: center;
+  width: 100%;
+  padding: 0 40px;
+  -webkit-transition: background-color 0.25s ease-out;
+  transition: background-color 0.25s ease-out;
+  /* background-color: var(--nav-v2-bg-color, #fff); */
+  gap: 20px;
+}
+
+.bookmark-navbar-list {
+  display: flex;
+  list-style: none;
+  justify-content: space-evenly;
+}
+.bookmark-navbar-list li a,
+a:visited {
+  /* color: inherit; */
+  text-decoration: none;
+}
+.active {
+  color: #7808d0;
+  font-weight: 600;
+}
+.not-active {
+  color: black;
+}
+.bookmark-navbar-middle {
+  display: flex;
+  position: relative;
+  top: -1px;
+  -ms-flex-order: -1;
+  order: -1;
+  width: 100%;
+}
+.bookmark-navbar-menu-btn {
+  --burger-padding: 6px;
+  display: grid;
+  -webkit-box-sizing: content-box;
+  box-sizing: content-box;
+  grid-template-columns: 1fr;
+  -ms-flex-order: -10;
+  order: -10;
+  width: 20px;
+  margin: 0;
+  margin-left: calc(-1 * var(--burger-padding));
+  padding: var(--burger-padding);
+  border: none;
+  background: none;
+  cursor: pointer;
+  gap: 5px;
+}
+
+@media (min-width: 950px) {
+  .bookmark-navbar {
+    grid-template-columns: 90px 1fr auto;
+    gap: 40px;
+  }
+  .bookmark-navbar-menu-btn {
+    display: none;
+  }
+}
+@media (min-width: 1400px) {
+  .bookmark-navbar {
+    grid-template-columns: 1fr 96px 1fr;
+    gap: 24px;
+  }
+  .bookmark-navbar-middle {
+    -ms-flex-order: initial;
+    order: initial;
+  }
+}
+@media (max-width: 949px) {
+  .bookmark-navbar-left {
+    --nav-v2-main-gap: 24px;
+    visibility: hidden;
+    position: fixed;
+    top: var(--nav-v2-height);
+    right: 0;
+    width: 100%;
+    -webkit-transition: opacity 0.25s ease-out, visibility 0.25s ease-out;
+    transition: opacity 0.25s ease-out, visibility 0.25s ease-out;
+    opacity: 0;
+  }
+}

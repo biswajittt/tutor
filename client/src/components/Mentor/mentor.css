@@ -1,0 +1,143 @@
+.learnerby-mentor {
+  display: flex;
+  padding: 0rem 1rem 0rem 1rem;
+}
+.learnerby-mentor-left {
+  background-color: white;
+  height: 100vh;
+  width: 35%;
+  padding: 0rem 1rem 0rem 1rem;
+}
+.learnerby-mentor-left-header-section {
+}
+.learnerby-mentor-left-header-section-mentor-logo {
+  width: 5rem;
+  height: 5rem;
+  background-color: grey;
+  border-radius: 50%;
+}
+
+.learnerby-mentor-left-header-section-mentor-name {
+  margin-top: 10px;
+  font-size: 1rem;
+  font-weight: bold;
+}
+.learnerby-mentor-left-header-section-mentor-gender-age {
+  margin-top: 5px;
+  font-size: 14px;
+  color: #b9b9b9;
+  font-weight: 500;
+}
+.learnerby-mentor-left-header-section-mentor-contact-list {
+}
+.learnerby-mentor-vertical-line {
+  margin-top: 6px;
+  border: 1px solid #f0ddff;
+}
+.learnerby-mentor-left-mentor-about {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.learnerby-mentor-left-mentor-about .about-title {
+  font-size: 13.5px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+.learnerby-mentor-left-mentor-about .about {
+  margin-bottom: 4px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.learnerby-mentor-left-mode-of-class-section {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.learnerby-mentor-left-mode-of-class-section div {
+  font-size: 13.5px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+.learnerby-mentor-left-mode-of-class {
+  display: flex;
+}
+.learnerby-mentor-left-mode-of-class p {
+  margin-right: 31px;
+  border: 1px solid grey;
+  padding: 3px;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.learnerby-mentor-left-specialization-section {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.learnerby-mentor-left-specialization-section div {
+  font-size: 13.5px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+.learnerby-mentor-left-specializations {
+  display: flex;
+  flex-wrap: wrap;
+}
+.learnerby-mentor-left-specializations p {
+  margin-right: 11px;
+  margin-bottom: 10px;
+  border: 1px solid grey;
+  padding: 3px;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.learnerby-mentor-left-rating-review-section {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.learnerby-mentor-left-rating-review-section .rating-review-text {
+  font-size: 13.5px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+.learnerby-mentor-left-rating-review-section .rating-review {
+  font-size: 13.5px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+.learnerby-mentor-left-rating-review-section
+  .rating-review
+  .rating-review-taught-student {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  color: #1f92b8;
+  background-color: #f5feff;
+  padding: 0.5rem 1rem 0.5rem 1rem;
+  border-radius: 10px;
+}
+.learnerby-mentor-left-rating-review-section
+  .rating-review
+  .rating-review-ratings {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  color: #e10c07;
+  background-color: #fff9f5;
+  padding: 0.5rem 1rem 0.5rem 1rem;
+  border-radius: 10px;
+}
+.learnerby-mentor-left-rating-review-section
+  .rating-review
+  .rating-review-reviews {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  color: #1e9555;
+  background-color: #f6fef9;
+  padding: 0.5rem 1rem 0.5rem 1rem;
+  border-radius: 10px;
+}
+/* right section */
+.learnerby-mentor-right {
+  padding: 2rem;
+}

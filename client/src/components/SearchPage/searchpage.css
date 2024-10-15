@@ -1,0 +1,68 @@
+.learnerby-searchpage-section {
+}
+.learnerby-searchpage-section-box {
+}
+.learnerby-searchpage-section-text {
+}
+.learnerby-searchpage-section-search-results {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.learnerby-searchpage-section-search-results-continer {
+  width: 20vw;
+  background-color: white;
+  border: 1px solid #e4e4e4;
+  border-radius: 9px;
+  padding: 10px;
+}
+.learnerby-searchpage-section-search-results-continer .header {
+}
+.learnerby-searchpage-section-search-results-continer .header .header-img {
+  width: 18vw;
+  height: 25vh;
+  border: 1px solid #ccc;
+}
+.learnerby-searchpage-section-search-results-continer .header .header-img img {
+  width: 100%;
+  height: 100%;
+}
+.learnerby-searchpage-section-search-results-continer .header .name {
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 6px;
+  margin-bottom: 7px;
+}
+.learnerby-searchpage-section-search-results-continer .header .expertise {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.learnerby-searchpage-section-search-results-continer .header .expertise span {
+  border: 1px solid black;
+  margin-right: 5px;
+  padding: 5px;
+  font-size: 13px;
+  border-radius: 9px;
+}
+.learnerby-searchpage-section-search-results-continer .vertical-line {
+  margin-top: 10px;
+  border: 1px solid #f0ddff;
+}
+
+/* footer */
+.learnerby-searchpage-section-search-results-continer .footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+.learnerby-searchpage-section-search-results-continer .foooter-price-location {
+}
+.learnerby-searchpage-section-search-results-continer .foooter-mentor-details {
+  background-color: black;
+  color: white;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 20px;
+}
