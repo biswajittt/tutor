@@ -28,7 +28,9 @@ app.use(cookieParser());
 //routers
 import studentRouter from "./routes/student.routes.js";
 import bookClassRouter from "./routes/bookclass.routes.js";
+import mentorRouter from "./routes/mentor.routes.js";
 //routes declaration
 app.use("/api/v1/auth/student", studentRouter); // redirectiong to 'userRouter after '
 app.use("/api/v1/bookclass/", bookClassRouter);
+app.use("/api/v1/mentor/", mentorRouter);
 export { app };

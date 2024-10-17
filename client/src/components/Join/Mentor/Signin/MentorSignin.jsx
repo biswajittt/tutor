@@ -1,23 +1,9 @@
 import React from "react";
 import "../mentorauth.css";
-import img from "../../section.jpg";
-import AuthButton from "../../../Utilities/AuthButton/AuthButton";
-import { useState } from "react";
-import validateMentorSignupdata from "../../../../validation/validateMentorSignupData";
-import { handleMentorRegistration } from "../../../../handler/handleMentorRegistration";
-export default function MentorSignup() {
+export default function MentorSignin() {
   //state variables
-  const [mentorImage, setMentorImage] = useState(null);
-  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [location, setLocation] = useState("");
-  const [mode, setMode] = useState("Mode of Teaching");
-  const [expertise, setExpertise] = useState("");
   const [password, setPassword] = useState("");
-  const [aboutYou, setAboutYou] = useState("");
-  const [shortClassPrice, setShortClassPrice] = useState("");
-  const [monthlyClassPrice, setMonthlyClassPrice] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [msg, setMsg] = useState("");
@@ -26,21 +12,7 @@ export default function MentorSignup() {
     //start loading
     setLoading(true);
     //data validation
-    if (
-      !validateMentorSignupdata(
-        mentorImage,
-        name,
-        aboutYou,
-        email,
-        phoneNumber,
-        location,
-        mode,
-        expertise,
-        parseFloat(shortClassPrice.trim()),
-        monthlyClassPrice,
-        password
-      )
-    ) {
+    if (!validateMentorSignupdata(email, password)) {
       setLoading(false);
       //show error
       setError(true);
@@ -49,11 +21,10 @@ export default function MentorSignup() {
     } else {
       //send data to backend
       const res = await handleMentorRegistration(
-        mentorImage,
         name,
         aboutYou,
         email,
-        phoneNumber,
+        phone,
         location,
         mode,
         expertise,
@@ -78,15 +49,7 @@ export default function MentorSignup() {
       console.log(res);
     }
 
-    console.log(
-      typeof name,
-      email,
-      phoneNumber,
-      location,
-      mode,
-      expertise,
-      password
-    );
+    console.log(typeof name, email, phone, location, mode, expertise, password);
   };
   return (
     <div className="learnerby-mentor-auth">
@@ -110,39 +73,6 @@ export default function MentorSignup() {
               {msg}
             </div>
           ) : null}
-          <div className="auth-group">
-            <div className="mentor-auth-profile-img">
-              <div className="mentor-auth-profile-img-container">
-                <form className="mentor-auth-profile-img-container-form">
-                  <span className="mentor-auth-profile-img-container-form-title">
-                    Upload your profile image
-                  </span>
-                  <p className="mentor-auth-profile-img-container-form-paragraph">
-                    File should be an image
-                  </p>
-                  <label
-                    htmlFor="file-input"
-                    className="mentor-auth-profile-img-container-form-drop-container"
-                  >
-                    <span className="mentor-auth-profile-img-container-form-drop-title">
-                      Drop files here
-                    </span>
-                    or
-                    <input
-                      type="file"
-                      accept="image/*"
-                      name="productImage"
-                      required=""
-                      id="mentor-auth-profile-img-container-form-file-input"
-                      onChange={(event) => {
-                        setMentorImage(event.target.files[0]);
-                      }}
-                    />
-                  </label>
-                </form>
-              </div>
-            </div>
-          </div>
           <div class="auth-group">
             <i class="fa-solid fa-user icon"></i>
             <input
@@ -182,7 +112,7 @@ export default function MentorSignup() {
               type="tel"
               placeholder="Phone Number"
               onChange={(e) => {
-                setPhoneNumber(e.target.value);
+                setPhone(e.target.value);
               }}
             />
           </div>
