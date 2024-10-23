@@ -5,7 +5,17 @@ import AuthButton from "../../../Utilities/AuthButton/AuthButton";
 import { useState } from "react";
 import validateMentorSignupdata from "../../../../validation/validateMentorSignupData";
 import { handleMentorRegistration } from "../../../../handler/handleMentorRegistration";
+import { useNavigate } from "react-router-dom";
+import useAuth from "../../../../handler/useAuth.js";
 export default function MentorSignup() {
+  const navigate = useNavigate();
+  //check user already loggedin or not
+  const isAuthenticated = useAuth();
+  // If the user is already logged in, redirect to the previous page
+  if (isAuthenticated) {
+    navigate("/");
+    return null;
+  }
   //state variables
   const [mentorImage, setMentorImage] = useState(null);
   const [name, setName] = useState("");
@@ -48,18 +58,36 @@ export default function MentorSignup() {
       console.log("error");
     } else {
       //send data to backend
+      const data = new FormData();
+      data.append("mentorImage", mentorImage);
+      data.append("name", name);
+      data.append("aboutYou", aboutYou);
+      data.append("email", email);
+      data.append("phoneNumber", phoneNumber);
+      data.append("location", location);
+      data.append("mode", mode);
+      //convert the expertise into array
+      const expertiseArray = expertise
+        .split(",")
+        .map((item) => item.trim())
+        .map((item) => item.charAt(0).toUpperCase() + item.slice(1));
+      data.append("expertise", expertiseArray);
+      data.append("shortClassPrice", parseFloat(shortClassPrice.trim()));
+      data.append("monthlyClassPrice", parseFloat(monthlyClassPrice.trim()));
+      data.append("password", password);
       const res = await handleMentorRegistration(
-        mentorImage,
-        name,
-        aboutYou,
-        email,
-        phoneNumber,
-        location,
-        mode,
-        expertise,
-        parseFloat(shortClassPrice.trim()),
-        parseFloat(monthlyClassPrice.trim()),
-        password
+        // mentorImage,
+        // name,
+        // aboutYou,
+        // email,
+        // phoneNumber,
+        // location,
+        // mode,
+        // expertise,
+        // parseFloat(shortClassPrice.trim()),
+        // parseFloat(monthlyClassPrice.trim()),
+        // password
+        data
       );
       if (res?.status === 409) {
         setError(true);

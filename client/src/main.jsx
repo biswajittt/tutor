@@ -14,7 +14,8 @@ import Payment from "./components/Payment/Payment.jsx";
 import SearchPage from "./components/SearchPage/SearchPage.jsx";
 import MentorSignup from "./components/Join/Mentor/Signup/MentorSignup.jsx";
 import MentorSignin from "./components/Join/Mentor/Signin/MentorSignin.jsx";
-
+import AuthWrapper from "./AuthWrapper.jsx";
+import ProtectedRoute from "./ProtectedRoute.jsx";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
@@ -23,8 +24,11 @@ const router = createBrowserRouter(
       <Route path="auth/mentor/login" element={<MentorSignin />} />
       <Route path="mentor" element={<Mentor />} />
       <Route path="search" element={<SearchPage />} />
-      <Route path="payment" element={<Payment />} />
-      <Route path="payment-status" element={<PaymentStatus />} />
+      {/* //only authenticate user can accessToken */}
+      <Route element={<ProtectedRoute />}>
+        <Route path="payment" element={<Payment />} />
+        <Route path="payment-status" element={<PaymentStatus />} />
+      </Route>
     </Route>
   )
 );

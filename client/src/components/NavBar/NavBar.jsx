@@ -4,8 +4,12 @@ import MenuToggleButton from "../Utilities/MenuToggleButton/MenuToggleButton.jsx
 import NavBarSearchInput from "../Utilities/NavBarSearchInput/NavBarSearchInput.jsx";
 
 import { Link, NavLink } from "react-router-dom";
+import useAuth from "../../handler/useAuth.js";
 
 export default function NavBar() {
+  //check authenticated or not
+  const isAuthenticated = useAuth();
+  // console.log(isAuthenticated);
   return (
     <div className="bookmark-navbar">
       <MenuToggleButton className="bookmark-navbar-menu-btn" />
@@ -42,7 +46,14 @@ export default function NavBar() {
           <li>
             <NavBarSearchInput newWidth="200px" newHeight="40px" />
           </li>
-          <Link to="/auth/registration">Join</Link>
+          {
+            /* if authenticated show logout else show join */
+            isAuthenticated ? (
+              "Logout"
+            ) : (
+              <Link to="/auth/registration">Join</Link>
+            )
+          }
         </ul>
       </div>
     </div>

@@ -7,8 +7,6 @@ const mentorScheme = new Schema(
       type: String,
       require: true,
       trim: true,
-      min: 3,
-      max: 20,
     },
     email: {
       type: String,
@@ -20,14 +18,12 @@ const mentorScheme = new Schema(
     mentorImage: {
       type: String,
     },
-    aboutyou: {
+    aboutYou: {
       type: String,
       require: true,
       trim: true,
-      min: 10,
-      max: 500,
     },
-    phonenumber: {
+    phoneNumber: {
       type: String,
       require: true,
     },

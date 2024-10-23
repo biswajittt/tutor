@@ -1,56 +1,70 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import img from "../../section.jpg";
+import AuthButton from "../../../Utilities/AuthButton/AuthButton";
 import "../mentorauth.css";
+import validateMentorSignindata from "../../../../validation/validateMentorSignindata";
+import handleMentorLogin from "../../../../handler/handleMentorLogin";
+import { useNavigate } from "react-router-dom";
+import useAuth from "../../../../handler/useAuth.js";
 export default function MentorSignin() {
+  const navigate = useNavigate();
+  //check user already loggedin or not
+  const isAuthenticated = useAuth();
+  // If the user is already logged in, redirect to the previous page
+  useEffect(() => {
+    // Navigate to the home page if the user is authenticated
+    if (isAuthenticated) {
+      navigate("/"); // Safely navigate after rendering
+    }
+  }, [isAuthenticated, navigate]); // Depend on isLoggedIn and navigate
+
   //state variables
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [msg, setMsg] = useState("");
+
   //handle form submit
   const onSubmit = async () => {
-    //start loading
+    //on submit set loading
     setLoading(true);
-    //data validation
-    if (!validateMentorSignupdata(email, password)) {
-      setLoading(false);
+    //go for data validation
+    const validation = validateMentorSignindata(email, password);
+    if (validation === false) {
       //show error
       setError(true);
       setMsg("Please fill the data carefully");
-      console.log("error");
+      //set loading false
+      setLoading(false);
+      return false;
     } else {
-      //send data to backend
-      const res = await handleMentorRegistration(
-        name,
-        aboutYou,
-        email,
-        phone,
-        location,
-        mode,
-        expertise,
-        parseFloat(shortClassPrice.trim()),
-        parseFloat(monthlyClassPrice.trim()),
-        password
-      );
-      if (res?.status === 409) {
-        setError(true);
-        setMsg("User Already Exist");
-        return;
-      } else if (res?.status === 500) {
-        setError(true);
-        setMsg("Something went wrong while registering user");
-        return;
-      } else if (res?.status === 201) {
-        setError(false);
-        setMsg("User registered successfully");
-        // if success then clean all the data then redirect
-        return;
-      }
+      // send the data to server and set loading true
+      setLoading(true);
+      const res = await handleMentorLogin(email, password);
+      setLoading(false);
       console.log(res);
+      if (res?.status === 200) {
+        //no error
+        setError(false);
+        setMsg("User logged in successfully");
+        navigate("/");
+      } else if (res?.status === 400) {
+        // error
+        setError(true);
+        setMsg("Email Id required");
+      } else if (res?.status === 404) {
+        // error
+        setError(true);
+        setMsg("User does not exist");
+      } else if (res?.status === 401) {
+        // error
+        setError(true);
+        setMsg("Invalid user credentials");
+      }
     }
-
-    console.log(typeof name, email, phone, location, mode, expertise, password);
   };
+
   return (
     <div className="learnerby-mentor-auth">
       <div className="learnerby-mentor-auth-left">
@@ -74,27 +88,6 @@ export default function MentorSignin() {
             </div>
           ) : null}
           <div class="auth-group">
-            <i class="fa-solid fa-user icon"></i>
-            <input
-              class="auth-input"
-              type="text"
-              placeholder="Name"
-              onChange={(e) => {
-                setName(e.target.value);
-              }}
-            />
-          </div>
-          <div class="auth-group">
-            <i class="fa-solid fa-brain icon"></i>
-            <textarea
-              className="auth-input"
-              placeholder="About You"
-              onChange={(e) => {
-                setAboutYou(e.target.value);
-              }}
-            ></textarea>
-          </div>
-          <div class="auth-group">
             <i class="fa-solid fa-envelope icon"></i>
             <input
               class="auth-input"
@@ -102,77 +95,6 @@ export default function MentorSignin() {
               placeholder="Email"
               onChange={(e) => {
                 setEmail(e.target.value);
-              }}
-            />
-          </div>
-          <div class="auth-group">
-            <i class="fa-solid fa-phone icon"></i>
-            <input
-              class="auth-input"
-              type="tel"
-              placeholder="Phone Number"
-              onChange={(e) => {
-                setPhone(e.target.value);
-              }}
-            />
-          </div>
-          <div class="auth-group">
-            <i class="fa-solid fa-location-dot icon"></i>
-            <input
-              class="auth-input"
-              type="text"
-              placeholder="Location"
-              onChange={(e) => {
-                setLocation(e.target.value);
-              }}
-            />
-          </div>
-          <div class="auth-group">
-            <i class="fa-solid fa-chalkboard-user icon"></i>
-            <select
-              name=""
-              id=""
-              className="auth-input"
-              defaultValue={mode}
-              onChange={(e) => {
-                setMode(e.target.value);
-              }}
-            >
-              <option value="">Mode of Teaching</option>
-              <option value="Online">Online</option>
-              <option value="Online">Offline</option>
-              <option value="Online">Both</option>
-            </select>
-          </div>
-          <div class="auth-group">
-            <i class="fa-solid fa-brain icon"></i>
-            <textarea
-              className="auth-input"
-              placeholder="Add expertise seperated by comma"
-              onChange={(e) => {
-                setExpertise(e.target.value);
-              }}
-            ></textarea>
-          </div>
-          <div class="auth-group">
-            <i class="fa-solid fa-user icon"></i>
-            <input
-              class="auth-input"
-              type="text"
-              placeholder="Price for Short Class"
-              onChange={(e) => {
-                setShortClassPrice(e.target.value);
-              }}
-            />
-          </div>
-          <div class="auth-group">
-            <i class="fa-solid fa-user icon"></i>
-            <input
-              class="auth-input"
-              type="text"
-              placeholder="Price for Monthly Class"
-              onChange={(e) => {
-                setMonthlyClassPrice(e.target.value);
               }}
             />
           </div>
@@ -192,7 +114,7 @@ export default function MentorSignin() {
             style={{ justifyContent: "center" }}
             onClick={onSubmit}
           >
-            <AuthButton title={loading ? "Loading" : "Get Started"} />
+            <AuthButton title={loading ? "Loading" : "Login"} />
           </div>
         </div>
       </div>

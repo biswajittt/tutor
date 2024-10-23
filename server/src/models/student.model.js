@@ -7,10 +7,7 @@ const studentScheme = new Schema(
       type: String,
       require: true,
       trim: true,
-      min: 3,
-      max: 20,
     },
-
     email: {
       type: String,
       required: true,
@@ -18,7 +15,7 @@ const studentScheme = new Schema(
       lowercase: true,
       trim: true,
     },
-    phonenumber: {
+    phoneNumber: {
       type: String,
       require: true,
     },

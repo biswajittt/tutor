@@ -7,7 +7,8 @@ const app = express();
 //cors
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN,
+    origin: "http://localhost:5173", // Only allow your frontend to access the backend
+    // origin: process.env.CORS_ORIGIN,
     credentials: true,
     allowedHeaders: ["Authorization", "Content-Type"], // Ensure Authorization is allowed
   })
@@ -29,7 +30,11 @@ app.use(cookieParser());
 import studentRouter from "./routes/student.routes.js";
 import bookClassRouter from "./routes/bookclass.routes.js";
 import mentorRouter from "./routes/mentor.routes.js";
+import authRouter from "./routes/auth.routes.js";
 //routes declaration
+/*auth route*/
+app.use("/api/v1", authRouter);
+/*auth route*/
 app.use("/api/v1/auth/student", studentRouter); // redirectiong to 'userRouter after '
 app.use("/api/v1/bookclass/", bookClassRouter);
 app.use("/api/v1/mentor/", mentorRouter);
