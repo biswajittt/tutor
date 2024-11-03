@@ -5,6 +5,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
 import { Mentor } from "../models/mentor.model.js";
 import { Student } from "../models/student.model.js";
+import mongoose from "mongoose";
 //Generate access and refresh token
 const generateAccessTokenAndRefreshToken = async (userId) => {
   try {
@@ -82,7 +83,7 @@ const registerMentor = asyncHandler(async (req, res) => {
   }
   //upload image to cloudinary
   const mentorImage = await uploadOnCloudinary(imageUrl);
-  console.log(mentorImage);
+  console.log("mentorImage", mentorImage);
   //*image is not required****
   if (!mentorImage) {
     return res.status(400).json(new ApiError(400, "Mentor Image is required"));
@@ -93,9 +94,6 @@ const registerMentor = asyncHandler(async (req, res) => {
   const existedMentorEmailinStudentCollection = await Student.findOne({
     email,
   });
-  // let existedMentor = await Student.findOne({
-  //   $or: [{ email }, { phoneNumber }],
-  // });
   if (existedMentorEmailinStudentCollection) {
     // throw new ApiError(409, "User already exists");
     return res.status(409).json(new ApiError(409, "User Already Exists"));
@@ -135,7 +133,7 @@ const registerMentor = asyncHandler(async (req, res) => {
 
   //send response
   return res
-    .status(201)
+    .status(200)
     .json(new ApiResponse(200, createdMentor, "User registered successfully"));
 });
 
@@ -197,6 +195,156 @@ const loginMentor = asyncHandler(async (req, res) => {
     );
 });
 
+// get mentor data on home screen
+const getAllMentorsData = asyncHandler(async (req, res) => {
+  try {
+    const mentors = await Mentor.find().select("-password -refreshToken");
+
+    if (!mentors || mentors.length === 0) {
+      return res.status(404).json(new ApiError(404, "No mentors found"));
+    }
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, mentors, "Mentors fetched successfully"));
+  } catch (error) {
+    console.error("Error fetching mentors:", error);
+
+    if (error.name === "CastError") {
+      // Handle invalid ID format errors (if any)
+      return res.status(400).json(new ApiError(400, "Invalid ID format"));
+    } else if (error.name === "ValidationError") {
+      // Handle validation errors
+      return res.status(400).json(new ApiError(400, error.message));
+    } else if (error.name === "MongoNetworkError") {
+      // Handle MongoDB connection issues
+      return res
+        .status(503)
+        .json(new ApiError(503, "Database connection error"));
+    }
+
+    // For any other unexpected errors
+    return res
+      .status(500)
+      .json(
+        new ApiError(500, "An unexpected error occurred while fetching mentors")
+      );
+  }
+});
+//get Mentor Details By Id
+const getMentorDetailsById = async (req, res) => {
+  try {
+    const { mentorId } = req.params;
+    // console.log(mentorId);
+    // Check if the ID format is valid (optional if using MongoDB ObjectID validation)
+    if (!mongoose.Types.ObjectId.isValid(mentorId)) {
+      return res
+        .status(400)
+        .json(new ApiError(400, "Invalid mentor ID format"));
+    }
+
+    const mentorDetails = await Mentor.findById(mentorId).select(
+      "-password -refreshToken"
+    );
+
+    // If mentor not found
+    if (!mentorDetails) {
+      return res.status(404).json(new ApiError(404, "Mentor not found"));
+    }
+
+    // Successful response
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          mentorDetails,
+          "Mentor details fetched successfully"
+        )
+      );
+  } catch (error) {
+    console.error("Error fetching mentor details:", error);
+
+    if (error.name === "CastError") {
+      // Handle invalid ID format error
+      return res.status(400).json(new ApiError(400, "Invalid ID format"));
+    } else if (error.name === "MongoNetworkError") {
+      // Handle MongoDB connection issues
+      return res
+        .status(503)
+        .json(new ApiError(503, "Database connection error"));
+    }
+
+    // For any other unexpected errors
+    return res
+      .status(500)
+      .json(
+        new ApiError(
+          500,
+          "An unexpected error occurred while fetching mentor details"
+        )
+      );
+  }
+};
+//getMentorsDetaBySearchQuery
+const getMentorsDetaBySearchQuery = async (req, res) => {
+  try {
+    const searchQuery = req.params.searchquery;
+
+    // Validate if the searchQuery is provided
+    if (!searchQuery) {
+      return res
+        .status(400)
+        .json(new ApiError(400, "Search query parameter is required"));
+    }
+
+    // Search mentors whose expertise array includes the search term (case-insensitive)
+    const mentorDetailsBySearchQuery = await Mentor.find({
+      expertise: { $regex: searchQuery, $options: "i" }, // 'i' for case-insensitive search
+    });
+
+    // If no mentors match the search query
+    if (mentorDetailsBySearchQuery.length === 0) {
+      return res
+        .status(404)
+        .json(
+          new ApiResponse(
+            404,
+            [],
+            "No mentors found with the specified expertise"
+          )
+        );
+    }
+
+    // Successful response
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          mentorDetailsBySearchQuery,
+          "Mentors fetched successfully"
+        )
+      );
+  } catch (error) {
+    console.error("Error fetching mentors by search query:", error);
+
+    // Database connection error handling
+    if (error.name === "MongoNetworkError") {
+      return res
+        .status(503)
+        .json(new ApiError(503, "Database connection error"));
+    }
+
+    // For any other unexpected errors
+    return res
+      .status(500)
+      .json(
+        new ApiError(500, "An unexpected error occurred while fetching mentors")
+      );
+  }
+};
+
 // refreshAccessToken***
 const refreshAccessToken = asyncHandler(async (req, res) => {
   const incomingRefreshToken =
@@ -247,4 +395,11 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     throw new ApiError(401, error?.message || "Invalid refresh token");
   }
 });
-export { registerMentor, loginMentor, refreshAccessToken };
+export {
+  registerMentor,
+  loginMentor,
+  refreshAccessToken,
+  getAllMentorsData,
+  getMentorDetailsById,
+  getMentorsDetaBySearchQuery,
+};

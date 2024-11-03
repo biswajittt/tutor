@@ -2,6 +2,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { Mentor } from "../models/mentor.model.js";
+import { Student } from "../models/student.model.js";
 import jwt from "jsonwebtoken"; // Make sure this import exists
 
 const checkIfLoggedIn = asyncHandler(async (req, res) => {
@@ -10,43 +11,31 @@ const checkIfLoggedIn = asyncHandler(async (req, res) => {
     const token =
       req.cookies?.accessToken ||
       req.header("Authorization")?.replace("Bearer ", "");
-
-    // console.log("token: ", token); // Log the token
-
+    // console.log(token);
     if (!token) {
       return res
         .status(401)
         .json(new ApiError(401, { message: "User not logged in" }));
     }
+    const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    const { _id, userType } = decodedToken;
 
-    // Decode the token with error handling
-    try {
-      const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-      console.log("decodedToken", decodedToken); // Log the decoded token
-
-      // Find the user based on the token's decoded payload
-      const user = await Mentor.findById(decodedToken._id).select(
-        "-password -refreshToken"
-      );
-
-      // console.log("user", user); // Log the user data
-
-      if (!user) {
-        return res.status(403).json({ message: "Invalid or expired token" });
-      }
-
-      // User is authenticated, send user details
-      return res.status(200).json({ user });
-    } catch (error) {
-      if (error.name === "TokenExpiredError") {
-        return res.status(401).json({ message: "Token expired" });
-      } else if (error.name === "JsonWebTokenError") {
-        return res.status(401).json({ message: "Invalid token" });
-      }
-      return res.status(500).json({ message: "Authentication error" });
+    let user;
+    if (userType === "mentor") {
+      user = await Mentor.findById(_id).select("-password -refreshToken");
+    } else if (userType === "student") {
+      user = await Student.findById(_id).select("-password -refreshToken");
+    } else {
+      return res.status(403).json({ message: "Invalid user type" });
     }
+
+    if (!user) {
+      return res.status(403).json({ message: "Invalid or expired token" });
+    }
+
+    // User is authenticated, send user details
+    return res.status(200).json({ user });
   } catch (error) {
-    console.error("Error during authentication", error); // Log the error
     return res.status(500).json({ message: "Authentication error" });
   }
 });

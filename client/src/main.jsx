@@ -16,13 +16,15 @@ import MentorSignup from "./components/Join/Mentor/Signup/MentorSignup.jsx";
 import MentorSignin from "./components/Join/Mentor/Signin/MentorSignin.jsx";
 import AuthWrapper from "./AuthWrapper.jsx";
 import ProtectedRoute from "./ProtectedRoute.jsx";
+import StudentSignup from "./components/Join/Student/Signup/StudentSignup.jsx";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
       <Route path="" element={<Home />} />
+      <Route path="auth/student/registration" element={<StudentSignup />} />
       <Route path="auth/mentor/registration" element={<MentorSignup />} />
       <Route path="auth/mentor/login" element={<MentorSignin />} />
-      <Route path="mentor" element={<Mentor />} />
+      <Route path="mentor/:mentorId" element={<Mentor />} />
       <Route path="search" element={<SearchPage />} />
       {/* //only authenticate user can accessToken */}
       <Route element={<ProtectedRoute />}>

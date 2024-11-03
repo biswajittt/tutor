@@ -17,18 +17,24 @@ when payment is successfull then olny store the whole data on databse
 // });
 /*end*/
 
-/*getting payment intent and get the client secret*/
-const paymentIntent = await stripe.paymentIntents.create({
-  amount: 100,
-  currency: "usd",
-  automatic_payment_methods: {
-    enabled: true,
-  },
-});
+/* Create Payment Intent and retrieve Client Secret */
 const getClientSecret = asyncHandler(async (req, res) => {
-  // console.log(paymentIntent);
-  const intent = paymentIntent;
-  res.json({ client_secret: intent.client_secret });
+  try {
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: 100, // Set the amount in cents (100 cents = 1 USD)
+      currency: "usd",
+      automatic_payment_methods: {
+        enabled: true,
+      },
+    });
+    res.json({ client_secret: paymentIntent.client_secret });
+  } catch (error) {
+    console.error("Stripe error:", error); // Log Stripe error for debugging
+    res.status(500).json({
+      message: "An error occurred while creating payment intent",
+      error: error.message,
+    });
+  }
 });
 /*end*/
 

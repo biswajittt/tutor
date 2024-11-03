@@ -3,6 +3,8 @@ import {
   registerMentor,
   loginMentor,
   refreshAccessToken,
+  getAllMentorsData,
+  getMentorDetailsById,
 } from "../controllers/mentor.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
@@ -20,6 +22,10 @@ router.get("/dashboard", verifyJWT, (req, res) => {
 });
 router.route("/login").post(loginMentor);
 
+// get mentor data on home screen
+router.route("/all-mentors-data").post(getAllMentorsData);
+//get mentor details by id
+router.route("/:mentorId").post(getMentorDetailsById);
 //if refresh token expired then generate again
 router.route("/refresh-token").post(refreshAccessToken);
 

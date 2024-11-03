@@ -117,18 +117,16 @@ export default function MentorSignup() {
     );
   };
   return (
-    <div className="learnerby-mentor-auth">
-      <div className="learnerby-mentor-auth-left">
+    <div className="learnerby-auth">
+      <div className="learnerby-auth-left">
         <img src={img} alt="" />
       </div>
-      <div className="learnerby-mentor-auth-right">
-        <div className="learnerby-mentor-auth-right-header">
-          <div className="learnerby-mentor-auth-right-header-logo">
-            Learnerby
-          </div>
-          <div className="learnerby-mentor-auth-right-header-btn">Login</div>
+      <div className="learnerby-auth-right">
+        <div className="learnerby-auth-right-header">
+          <div className="learnerby-auth-right-header-logo">Learnerby</div>
+          <div className="learnerby-auth-right-header-btn">Login</div>
         </div>
-        <div className="learnerby-mentor-auth-right-form-container">
+        <div className="learnerby-auth-right-form-container">
           {/* show this when any response is there */}
           {msg.length > 1 ? (
             <div

@@ -14,7 +14,7 @@ export const handleMentorRegistration = async (
   // password
   data
 ) => {
-  console.log(data.get("expertise"));
+  // console.log(data.get("expertise"));
   //convent the expertise into array
   // data.get("expertise") = data.get("expertise")
   //   .split(",")

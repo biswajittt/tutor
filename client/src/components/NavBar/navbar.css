@@ -17,6 +17,12 @@
   transition: background-color 0.25s ease-out;
   /* background-color: var(--nav-v2-bg-color, #fff); */
   gap: 20px;
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
 }
 
 .bookmark-navbar-list {
@@ -61,7 +67,34 @@ a:visited {
   cursor: pointer;
   gap: 5px;
 }
+.learnerby-navbar-right-join {
+}
+.learnerby-navbar-right-join-btn {
+}
+.learnerby-navbar-right-mentor-student-join-card {
+  background-color: white;
+  padding: 7px;
+  border-radius: 10px;
+}
 
+.learnerby-navbar-right-mentor-student-join-card-mentor-btn {
+  margin-right: 10px;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 10px;
+}
+.learnerby-navbar-right-mentor-student-join-card-mentor-btn:hover {
+  background-color: #f4f4f4;
+}
+.learnerby-navbar-right-mentor-student-join-card-student-btn {
+  margin-right: 10px;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 10px;
+}
+.learnerby-navbar-right-mentor-student-join-card-student-btn:hover {
+  background-color: #f4f4f4;
+}
 @media (min-width: 950px) {
   .bookmark-navbar {
     grid-template-columns: 90px 1fr auto;

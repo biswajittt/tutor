@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./homecardscroller.css";
 import Commerce from "./images/commerce.png";
 import Engineering from "./images/engineering.png";

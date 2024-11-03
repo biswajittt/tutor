@@ -1,6 +1,7 @@
 .learnerby-mentor {
   display: flex;
   padding: 0rem 1rem 0rem 1rem;
+  margin-top: 5rem;
 }
 .learnerby-mentor-left {
   background-color: white;

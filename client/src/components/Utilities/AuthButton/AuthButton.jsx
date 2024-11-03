@@ -2,9 +2,9 @@ import React from "react";
 import "./authbutton.css";
 export default function AuthButton({ title }) {
   return (
-    <button class="cssbuttons-io-button">
+    <button className="cssbuttons-io-button">
       {title}
-      <div class="auth-button">
+      <div className="auth-button">
         <svg
           height="24"
           width="24"

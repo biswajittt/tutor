@@ -1,7 +1,7 @@
 import React from "react";
 import HomeHeader from "../Utilities/PageHeader/PageHeader.jsx";
 import HomeCardScroller from "./HomeCardScroller/HomeCardScroller.jsx";
-import NewArrival from "./NewArrival/NewArrival.jsx";
+import MentorSection from "./NewArrival/MentorSection.jsx";
 import NavBar from "../Navbar/Navbar.jsx";
 export default function Home() {
   return (
@@ -14,7 +14,7 @@ export default function Home() {
           buttonText="Get Started"
         />
         <HomeCardScroller />
-        <NewArrival />
+        <MentorSection />
       </div>
     </>
   );

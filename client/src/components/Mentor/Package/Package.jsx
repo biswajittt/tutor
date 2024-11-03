@@ -1,9 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
 import "./package.css";
-export default function Package() {
+import handleClassPayment from "../../../handler/handleClassPayment";
+export default function Package({
+  mentorId,
+  shortClassPrice,
+  monthlyClassPrice,
+}) {
+  const [selectedClass, setSelectedClass] = useState(null);
+  const [error, setError] = useState(null);
+  const handleClassSelection = (classType) => {
+    setSelectedClass(classType);
+    console.log(selectedClass);
+  };
+  //handle class booking
+  const handleClassBooking = () => {
+    handleClassPayment(mentorId, selectedClass);
+  };
   return (
     <div className="learnerby-mentor-package">
-      <div className="learnerby-mentor-package-short-topic-class">
+      <div
+        className="learnerby-mentor-package-short-topic-class"
+        onClick={() => handleClassSelection("short")}
+      >
         <div className="book-class-header">
           <div className="book-class-title">Book a short class</div>
           <div className="book-class-sub-title">Help with the short topics</div>
@@ -15,15 +33,18 @@ export default function Package() {
               style={{ fontSize: "2.5vw", marginRight: "10px" }}
             ></i>
 
-            <span>30 minutes class</span>
+            <span>Upto 1 hour class</span>
           </div>
           <div className="book-class-section-pay">
-            <span className="money">₹50</span>
+            <span className="money">₹{shortClassPrice}</span>
             <i class="fa-regular fa-paper-plane"></i>
           </div>
         </div>
       </div>
-      <div className="learnerby-mentor-package-monthly-class">
+      <div
+        className="learnerby-mentor-package-monthly-class"
+        onClick={() => handleClassSelection("monthly")}
+      >
         <div className="book-class-header">
           <div className="book-class-title">Book class for a month</div>
           <div className="book-class-sub-title">
@@ -40,7 +61,7 @@ export default function Package() {
             <span>30 minutes class</span>
           </div>
           <div className="book-class-section-pay">
-            <span className="money">₹3000</span>
+            <span className="money">₹{monthlyClassPrice}</span>
             <i class="fa-regular fa-paper-plane"></i>
           </div>
         </div>

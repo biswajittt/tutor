@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 const mentorScheme = new Schema(
   {
@@ -84,6 +84,7 @@ mentorScheme.methods.generateAccessToken = function () {
       _id: this._id,
       email: this.email,
       name: this.name,
+      userType: "mentor", // add userType
     },
     process.env.ACCESS_TOKEN_SECRET,
     {
@@ -97,6 +98,7 @@ mentorScheme.methods.generateRefreshToken = function () {
   return jwt.sign(
     {
       _id: this._id,
+      userType: "mentor", // add userType
     },
     process.env.REFRESH_TOKEN_SECRET,
     {

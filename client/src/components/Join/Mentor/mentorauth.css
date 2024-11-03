@@ -1,32 +1,32 @@
-.learnerby-mentor-auth {
+.learnerby-auth {
   display: flex;
   background-color: white;
 }
-.learnerby-mentor-auth-left {
+.learnerby-auth-left {
   width: 30%;
   height: 100vh;
   background-color: #f3f5f4;
 }
-.learnerby-mentor-auth-left img {
+.learnerby-auth-left img {
   width: 100%;
   margin-top: 50%;
 }
-.learnerby-mentor-auth-right {
+.learnerby-auth-right {
   width: 70%;
   display: flex;
   /* justify-content: center; */
   flex-direction: column;
   align-items: center;
 }
-.learnerby-mentor-auth-right-header {
+.learnerby-auth-right-header {
   width: inherit;
   display: flex;
   justify-content: space-between;
   padding: 10px;
 }
-.learnerby-mentor-auth-right-header-logo {
+.learnerby-auth-right-header-logo {
 }
-.learnerby-mentor-auth-right-header-btn {
+.learnerby-auth-right-header-btn {
 }
 .auth-response {
   margin-bottom: 21px;
@@ -34,7 +34,7 @@
   font-size: 1.3vw;
   font-weight: bold;
 }
-.learnerby-mentor-auth-right-form-container {
+.learnerby-auth-right-form-container {
   margin-top: 2rem;
 }
 /* input */
