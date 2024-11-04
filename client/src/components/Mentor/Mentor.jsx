@@ -18,7 +18,7 @@ export default function Mentor() {
     if (res.status === 200) {
       setMentorDetails(res.data?.data);
     }
-    console.log(res);
+    // console.log(res);
   };
 
   //fetch data on page load

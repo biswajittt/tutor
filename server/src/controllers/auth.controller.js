@@ -34,7 +34,7 @@ const checkIfLoggedIn = asyncHandler(async (req, res) => {
     }
 
     // User is authenticated, send user details
-    return res.status(200).json({ user });
+    return res.status(200).json({ user, userType });
   } catch (error) {
     return res.status(500).json({ message: "Authentication error" });
   }

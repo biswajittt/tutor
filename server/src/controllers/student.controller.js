@@ -146,7 +146,7 @@ const loginStudent = asyncHandler(async (req, res) => {
   const options = {
     httpOnly: true,
     secure: false, //In Development: If you're testing this on localhost (HTTP), having secure: true will prevent the cookie from being set, because secure requires HTTPS. In development, you should set the secure flag conditionally.
-    sameSite: "None", // Ensures the cookies are sent only from your own site
+    sameSite: "Strict", // Ensures the cookies are sent only from your own site
   };
   return res
     .status(200)

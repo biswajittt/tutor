@@ -2,7 +2,7 @@ import React from "react";
 import img from "../../section.jpg";
 import AuthButton from "../../../Utilities/AuthButton/AuthButton";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../../../../handler/useAuth.js";
 import validateStudentSignupdata from "../../../../validation/validateStudentSignupdata.js";
 import handleStudentRegistration from "../../../../handler/handleStudentRegistration.js";
@@ -82,7 +82,9 @@ export default function StudentSignup() {
       <div className="learnerby-auth-right">
         <div className="learnerby-auth-right-header">
           <div className="learnerby-auth-right-header-logo">Learnerby</div>
-          <div className="learnerby-auth-right-header-btn">Login</div>
+          <div className="learnerby-auth-right-header-btn">
+            <Link to="/auth/student/login">Login</Link>
+          </div>
         </div>
         <div className="learnerby-auth-right-form-container">
           {/* show this when any response is there */}

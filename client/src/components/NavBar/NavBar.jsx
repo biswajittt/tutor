@@ -5,10 +5,11 @@ import NavBarSearchInput from "../Utilities/NavBarSearchInput/NavBarSearchInput.
 
 import { Link, NavLink } from "react-router-dom";
 import useAuth from "../../handler/useAuth.js";
+import StudentProfileLogo from "../Utilities/StudentProfileLogo/StudentProfileLogo.jsx";
 
 export default function NavBar() {
   const [navbarColor, setNavbarColor] = useState("transparent");
-
+  const [showUserDropdown, setShowUserDropdown] = useState(false);
   useEffect(() => {
     const handleScroll = () => {
       // Check if scroll position is greater than a certain value (e.g., 50px)
@@ -28,8 +29,8 @@ export default function NavBar() {
   }, []);
 
   //check authenticated or not
-  const isAuthenticated = useAuth();
-  // console.log(isAuthenticated);
+  const { isAuthenticated, user } = useAuth();
+  // console.log(user);
 
   //state variables
   const [clickedOnJoinButton, setClickedOnjoinButton] = useState(false);
@@ -81,7 +82,27 @@ export default function NavBar() {
           {/* /* if authenticated show logout else show join */}
           <li>
             {isAuthenticated ? (
-              <div>Logout</div>
+              <div className="bookmark-navbar-list-user-dropdown">
+                <button
+                  onClick={() => {
+                    setShowUserDropdown(true);
+                  }}
+                >
+                  <StudentProfileLogo fullName={user?.name} />
+                </button>
+                <div
+                  className="bookmark-navbar-list-user-dropdown-content"
+                  style={
+                    showUserDropdown
+                      ? { display: "block" }
+                      : { display: "none" }
+                  }
+                >
+                  <a href="#home">Home</a>
+                  <a href="#about">About</a>
+                  <a href="#contact">Contact</a>
+                </div>
+              </div>
             ) : (
               <div
                 className="learnerby-navbar-right-join"

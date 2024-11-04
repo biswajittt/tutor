@@ -10,7 +10,7 @@ export default function Package({
   const [error, setError] = useState(null);
   const handleClassSelection = (classType) => {
     setSelectedClass(classType);
-    console.log(selectedClass);
+    // console.log(selectedClass);
   };
   //handle class booking
   const handleClassBooking = () => {

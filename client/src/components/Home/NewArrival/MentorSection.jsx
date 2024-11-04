@@ -19,7 +19,7 @@ export default function MentorSection() {
       setShowLoading(false);
       setMentorsData(res.data.data);
     }
-    console.log(res);
+    // console.log(res);
   };
 
   //on page load fetch data

@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 const useAuth = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(null); // Start with `null` for loading state
+  const [user, setUser] = useState(null); // To store user data
   const navigate = useNavigate();
   useEffect(() => {
     const checkAuthentication = async () => {
@@ -14,10 +15,11 @@ const useAuth = () => {
             withCredentials: true, // Ensure cookies are sent with the request
           }
         );
-        console.log("res", response);
+        // console.log("res", response);
         // If the user is authenticated, set true
         if (response?.data?.user) {
           setIsAuthenticated(true);
+          setUser(response.data.user); // Store user data in state
         } else {
           setIsAuthenticated(false);
         }
@@ -40,7 +42,7 @@ const useAuth = () => {
     checkAuthentication();
   }, []);
 
-  return isAuthenticated; // Returns `true`, `false`, or `null` (loading)
+  return { isAuthenticated, user }; // Return `isAuthenticated ->  // Returns `true`, `false`, or `null` (loading)` and `user` data
 };
 
 export default useAuth;

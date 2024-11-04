@@ -17,6 +17,7 @@ import MentorSignin from "./components/Join/Mentor/Signin/MentorSignin.jsx";
 import AuthWrapper from "./AuthWrapper.jsx";
 import ProtectedRoute from "./ProtectedRoute.jsx";
 import StudentSignup from "./components/Join/Student/Signup/StudentSignup.jsx";
+import StudentSignin from "./components/Join/Student/Signin/StudentSignin.jsx";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
@@ -24,6 +25,7 @@ const router = createBrowserRouter(
       <Route path="auth/student/registration" element={<StudentSignup />} />
       <Route path="auth/mentor/registration" element={<MentorSignup />} />
       <Route path="auth/mentor/login" element={<MentorSignin />} />
+      <Route path="auth/student/login" element={<StudentSignin />} />
       <Route path="mentor/:mentorId" element={<Mentor />} />
       <Route path="search" element={<SearchPage />} />
       {/* //only authenticate user can accessToken */}
