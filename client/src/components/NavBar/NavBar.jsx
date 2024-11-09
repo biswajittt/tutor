@@ -88,7 +88,16 @@ export default function NavBar() {
                     setShowUserDropdown(true);
                   }}
                 >
-                  <StudentProfileLogo fullName={user?.name} />
+                  {/* if mentor image existe this show mentor image else --> it is student -- show student name */}
+                  {user.mentorImage ? (
+                    <img
+                      src={user.mentorImage}
+                      alt=""
+                      style={{ width: "39px", borderRadius: "50%" }}
+                    />
+                  ) : (
+                    <StudentProfileLogo fullName={user?.name} />
+                  )}
                 </button>
                 <div
                   className="bookmark-navbar-list-user-dropdown-content"

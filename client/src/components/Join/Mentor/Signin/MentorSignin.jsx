@@ -9,7 +9,7 @@ import useAuth from "../../../../handler/useAuth.js";
 export default function MentorSignin() {
   const navigate = useNavigate();
   //check user already loggedin or not
-  const isAuthenticated = useAuth();
+  const { isAuthenticated } = useAuth();
   // If the user is already logged in, redirect to the previous page
   useEffect(() => {
     // Navigate to the home page if the user is authenticated
@@ -43,7 +43,7 @@ export default function MentorSignin() {
       setLoading(true);
       const res = await handleMentorLogin(email, password);
       setLoading(false);
-      console.log(res);
+      // console.log(res);
       if (res?.status === 200) {
         //no error
         setError(false);
@@ -66,18 +66,16 @@ export default function MentorSignin() {
   };
 
   return (
-    <div className="learnerby-mentor-auth">
-      <div className="learnerby-mentor-auth-left">
+    <div className="learnerby-auth">
+      <div className="learnerby-auth-left">
         <img src={img} alt="" />
       </div>
-      <div className="learnerby-mentor-auth-right">
-        <div className="learnerby-mentor-auth-right-header">
-          <div className="learnerby-mentor-auth-right-header-logo">
-            Learnerby
-          </div>
-          <div className="learnerby-mentor-auth-right-header-btn">Login</div>
+      <div className="learnerby-auth-right">
+        <div className="learnerby-auth-right-header">
+          <div className="learnerby-auth-right-header-logo">Learnerby</div>
+          <div className="learnerby-auth-right-header-btn">Login</div>
         </div>
-        <div className="learnerby-mentor-auth-right-form-container">
+        <div className="learnerby-auth-right-form-container">
           {/* show this when any response is there */}
           {msg.length > 1 ? (
             <div
@@ -87,10 +85,10 @@ export default function MentorSignin() {
               {msg}
             </div>
           ) : null}
-          <div class="auth-group">
-            <i class="fa-solid fa-envelope icon"></i>
+          <div className="auth-group">
+            <i className="fa-solid fa-envelope icon"></i>
             <input
-              class="auth-input"
+              className="auth-input"
               type="email"
               placeholder="Email"
               onChange={(e) => {
@@ -98,10 +96,10 @@ export default function MentorSignin() {
               }}
             />
           </div>
-          <div class="auth-group">
-            <i class="fa-solid fa-lock icon"></i>
+          <div className="auth-group">
+            <i className="fa-solid fa-lock icon"></i>
             <input
-              class="auth-input"
+              className="auth-input"
               type="password"
               placeholder="Password"
               onChange={(e) => {

@@ -18,6 +18,14 @@ import AuthWrapper from "./AuthWrapper.jsx";
 import ProtectedRoute from "./ProtectedRoute.jsx";
 import StudentSignup from "./components/Join/Student/Signup/StudentSignup.jsx";
 import StudentSignin from "./components/Join/Student/Signin/StudentSignin.jsx";
+import StudentDashboard from "./components/Dashboard/Student/StudentDashboard.jsx";
+import StudentProfile from "./components/Dashboard/Student/StudentProfile.jsx";
+import StudentClasses from "./components/Dashboard/Student/StudentClasses.jsx";
+// import MentorDashboard from "./components/Dashboard/Mentor/MentorDashboard.jsx";
+import Page from "./components/Dashboard/Mentor/app/dashboard/page.jsx";
+import MentorProfile from "./components/Dashboard/Mentor/Sections/MentorProfile.jsx";
+// import MentorDashboard from "./components/Dashboard/Mentor/MentorDashboard.jsx";
+// import MentorProfile from "./components/Dashboard/Mentor/MentorProfile.jsx";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
@@ -28,10 +36,28 @@ const router = createBrowserRouter(
       <Route path="auth/student/login" element={<StudentSignin />} />
       <Route path="mentor/:mentorId" element={<Mentor />} />
       <Route path="search" element={<SearchPage />} />
+
       {/* //only authenticate user can accessToken */}
       <Route element={<ProtectedRoute />}>
         <Route path="payment" element={<Payment />} />
         <Route path="payment-status" element={<PaymentStatus />} />
+
+        {/* Student Dashboard */}
+        <Route path="student/dashboard" element={<StudentDashboard />}>
+          {/* Default route for the dashboard */}
+          <Route index element={<StudentProfile />} />
+          <Route path="classes" element={<StudentClasses />} />
+        </Route>
+
+        {/* Mentor Dashboard */}
+        {/* <Route path="mentor/dashboard" element={<MentorDashboard />}>
+          <Route path="" element={<MentorProfile />} />
+        </Route> */}
+      </Route>
+
+      {/* mentor dashboard */}
+      <Route path="mentor/dashboard" element={<Page />}>
+        <Route path="" element={<MentorProfile />} />
       </Route>
     </Route>
   )
