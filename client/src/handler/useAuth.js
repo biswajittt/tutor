@@ -15,7 +15,7 @@ const useAuth = () => {
             withCredentials: true, // Ensure cookies are sent with the request
           }
         );
-        console.log("res", response);
+        // console.log("res", response);
         // If the user is authenticated, set true
         if (response?.data?.user) {
           setIsAuthenticated(true);

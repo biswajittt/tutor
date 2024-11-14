@@ -49,15 +49,10 @@ const router = createBrowserRouter(
           <Route path="classes" element={<StudentClasses />} />
         </Route>
 
-        {/* Mentor Dashboard */}
-        {/* <Route path="mentor/dashboard" element={<MentorDashboard />}>
+        {/* mentor dashboard */}
+        <Route path="mentor/dashboard" element={<Page />}>
           <Route path="" element={<MentorProfile />} />
-        </Route> */}
-      </Route>
-
-      {/* mentor dashboard */}
-      <Route path="mentor/dashboard" element={<Page />}>
-        <Route path="" element={<MentorProfile />} />
+        </Route>
       </Route>
     </Route>
   )

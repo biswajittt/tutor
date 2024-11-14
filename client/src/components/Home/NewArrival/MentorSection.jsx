@@ -15,7 +15,7 @@ export default function MentorSection() {
   const getMentorsData = async () => {
     const res = await fetchingMentorsDataHandler();
     //success
-    if (res.status === 200) {
+    if (res?.status === 200) {
       setShowLoading(false);
       setMentorsData(res.data.data);
     }
