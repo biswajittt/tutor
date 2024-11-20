@@ -6,6 +6,7 @@ import jwt from "jsonwebtoken";
 import { Mentor } from "../models/mentor.model.js";
 import { Student } from "../models/student.model.js";
 import mongoose from "mongoose";
+import { decrypt, encrypt } from "./encryption.controller.js";
 //Generate access and refresh token
 const generateAccessTokenAndRefreshToken = async (userId) => {
   try {
@@ -252,13 +253,26 @@ const getMentorDetailsById = async (req, res) => {
       return res.status(404).json(new ApiError(404, "Mentor not found"));
     }
 
+    // Encrypt the class types before sending to the frontend
+    const encryptedShortClass = encrypt("shortclass");
+    const encryptedMonthlyClass = encrypt("monthlyclass");
+
+    // Add the encrypted class types to the mentor details object
+    // mentorDetails.shortClassewrwrwrrw = encryptedShortClass;
+    // mentorDetails.monthlyClass = encryptedMonthlyClass;
+
+    // console.log(mentorDetails);
     // Successful response
     return res
       .status(200)
       .json(
         new ApiResponse(
           200,
-          mentorDetails,
+          {
+            mentorDetails,
+            shortClass: encryptedShortClass,
+            monthlyClass: encryptedMonthlyClass,
+          },
           "Mentor details fetched successfully"
         )
       );

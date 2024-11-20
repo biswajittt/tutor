@@ -35,7 +35,7 @@ import authRouter from "./routes/auth.routes.js";
 /*auth route*/
 app.use("/api/v1", authRouter);
 /*auth route*/
-app.use("/api/v1/student", studentRouter); // redirectiong to 'userRouter after '
-app.use("/api/v1/bookclass/", bookClassRouter);
+app.use("/api/v1/student/", studentRouter); // redirectiong to 'userRouter after '
+app.use("/api/v1/bookclass", bookClassRouter);
 app.use("/api/v1/mentor/", mentorRouter);
 export { app };
