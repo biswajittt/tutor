@@ -17,10 +17,10 @@ function Payment() {
   // call for client secret when the page load
   useEffect(() => {
     async function gett() {
-      const res = await axios.get(
+      const res = await axios.post(
         `http://localhost:8000/api/v1/bookclass/client-secret`
       );
-      console.log(res);
+      console.log("res", res);
       if (res && res?.data && res.data?.client_secret)
         setClientSecret(res.data.client_secret);
       // const { client_secret: clientSecret } = await res.json();
@@ -67,7 +67,7 @@ function Payment() {
     // Fully customizable with appearance API.
     appearance,
   };
-  // console.log(clientSecret);
+  console.log(clientSecret);
   return (
     <>
       {clientSecret != "" ? (
