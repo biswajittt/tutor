@@ -1,4 +1,4 @@
-.App {
+.stripe-app {
   font-family: -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 16px;
   -webkit-font-smoothing: antialiased;
@@ -9,7 +9,7 @@
   width: 100vw;
 }
 
-form {
+.stripe-app-form {
   width: 30vw;
   min-width: 500px;
   align-self: center;
@@ -34,7 +34,7 @@ form {
 }
 
 /* Buttons and links */
-button {
+.stripe-app-form-btn {
   background: #0055de;
   font-family: Arial, sans-serif;
   color: #ffffff;
@@ -50,11 +50,11 @@ button {
   width: 100%;
 }
 
-button:hover {
+.stripe-app-form-btn:hover {
   filter: contrast(115%);
 }
 
-button:disabled {
+.stripe-app-form-btn:disabled {
   opacity: 0.5;
   cursor: default;
 }
@@ -163,7 +163,7 @@ h2 {
   text-align: center;
 }
 
-a {
+/* a {
   text-decoration: none;
   font-size: 16px;
   font-weight: 600;
@@ -172,7 +172,7 @@ a {
 }
 a:hover {
   filter: contrast(120%);
-}
+} */
 
 #details-table {
   overflow-x: auto;
@@ -238,7 +238,7 @@ td {
 }
 
 @media only screen and (max-width: 600px) {
-  form,
+  .stripe-app-form,
   #dpm-annotation,
   #payment-status {
     width: 80vw;

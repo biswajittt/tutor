@@ -261,7 +261,10 @@ export default function Mentor() {
             </CardContent>
           </Card>
         </div>
-        <ScrollArea className="ml-10">
+        <ScrollArea
+          className="mx-10 w-full rounded-md border"
+          style={{ height: "88vh" }}
+        >
           <div className="flex flex-wrap gap-2 justify-center">
             <Card className="border-solid">
               <CardHeader>

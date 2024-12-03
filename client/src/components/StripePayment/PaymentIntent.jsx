@@ -76,7 +76,7 @@ export default function PaymentIntent() {
   console.log(clientSecret);
 
   return (
-    <div className="App">
+    <div className="stripe-app">
       {clientSecret && (
         <Elements
           options={{ clientSecret, appearance, loader }}

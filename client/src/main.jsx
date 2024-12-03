@@ -27,6 +27,8 @@ import MentorProfile from "./components/Dashboard/Mentor/Sections/MentorProfile.
 import PaymentIntent from "./components/StripePayment/PaymentIntent.jsx";
 import CheckoutForm from "./components/StripePayment/CheckoutForm.jsx";
 import CompletePage from "./components/StripePayment/CompletePage.jsx";
+import { Provider } from "react-redux";
+import { store } from "./app/store.js";
 // import PP from "./components/Payment/pp.jsx";
 // import Apps from "./components/Payment/temp/app.jsx";
 // import Return from "./components/Payment/temp/Return.jsx";
@@ -86,5 +88,7 @@ const router = createBrowserRouter(
   )
 );
 createRoot(document.getElementById("root")).render(
-  <RouterProvider router={router} />
+  <Provider store={store}>
+    <RouterProvider router={router} />
+  </Provider>
 );

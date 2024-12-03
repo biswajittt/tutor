@@ -50,9 +50,17 @@ export default function CheckoutForm() {
 
   return (
     <>
-      <form id="payment-form" onSubmit={handleSubmit}>
+      <form
+        id="payment-form"
+        onSubmit={handleSubmit}
+        className="stripe-app-form"
+      >
         <PaymentElement id="payment-element" options={paymentElementOptions} />
-        <button disabled={isLoading || !stripe || !elements} id="submit">
+        <button
+          disabled={isLoading || !stripe || !elements}
+          id="submit"
+          className="stripe-app-form-btn"
+        >
           <span id="button-text">
             {isLoading ? (
               <div className="spinner" id="spinner"></div>

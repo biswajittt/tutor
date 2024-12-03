@@ -10,7 +10,7 @@ import useAuth from "../../../../handler/useAuth.js";
 export default function MentorSignup() {
   const navigate = useNavigate();
   //check user already loggedin or not
-  const isAuthenticated = useAuth();
+  const { isAuthenticated } = useAuth();
   // If the user is already logged in, redirect to the previous page
   if (isAuthenticated) {
     navigate("/");

@@ -15,16 +15,20 @@ const useAuth = () => {
             withCredentials: true, // Ensure cookies are sent with the request
           }
         );
-        // console.log("res", response);
+
+        console.log("res", response);
+        if (response?.status === 401) {
+          setIsAuthenticated(false);
+        }
         // If the user is authenticated, set true
-        if (response?.data?.user) {
+        else if (response?.data?.user) {
           setIsAuthenticated(true);
           setUser(response.data.user); // Store user data in state
         } else {
           setIsAuthenticated(false);
         }
       } catch (error) {
-        console.error("Error during authentication check:", error);
+        // console.error("Error during authentication check:", error);
         setIsAuthenticated(false); // On error, assume not authenticated
         // This block will run if the response status is 401 or other errors
         // If a 401 error is returned, redirect to login
