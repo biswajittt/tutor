@@ -10,7 +10,7 @@ export default function StudentSignup() {
   const navigate = useNavigate();
   //check user already loggedin or not
   const { isAuthenticated } = useAuth();
-  console.log(isAuthenticated);
+  // console.log(isAuthenticated);
   // If the user is already logged in, redirect to the previous page
   if (isAuthenticated) {
     navigate("/");
@@ -75,89 +75,200 @@ export default function StudentSignup() {
     // console.log(typeof name, email, phoneNumber, location, password);
   };
   return (
-    <div className="learnerby-auth">
-      <div className="learnerby-auth-left">
-        <img src={img} alt="" />
-      </div>
-      <div className="learnerby-auth-right">
-        <div className="learnerby-auth-right-header">
-          <div className="learnerby-auth-right-header-logo">Learnerby</div>
-          <div className="learnerby-auth-right-header-btn">
-            <Link to="/auth/student/login">Login</Link>
+    // <div className="learnerby-auth">
+    //   <div className="learnerby-auth-left">
+    //     <img src={img} alt="" />
+    //   </div>
+    //   <div className="learnerby-auth-right">
+    //     <div className="learnerby-auth-right-header">
+    //       <div className="learnerby-auth-right-header-logo">Learnerby</div>
+    //       <div className="learnerby-auth-right-header-btn">
+    //         <Link to="/auth/student/login">Login</Link>
+    //       </div>
+    //     </div>
+    //     <div className="learnerby-auth-right-form-container">
+    //       {/* show this when any response is there */}
+    //       {msg.length > 1 ? (
+    //         <div
+    //           className="auth-response"
+    //           style={{ color: `${error ? "Red" : "#00e409"}` }}
+    //         >
+    //           {msg}
+    //         </div>
+    //       ) : null}
+    //       <div className="auth-group">
+    //         <i className="fa-solid fa-user icon"></i>
+    //         <input
+    //           className="auth-input"
+    //           type="text"
+    //           placeholder="Name"
+    //           onChange={(e) => {
+    //             setName(e.target.value);
+    //           }}
+    //         />
+    //       </div>
+    //       <div className="auth-group">
+    //         <i className="fa-solid fa-envelope icon"></i>
+    //         <input
+    //           className="auth-input"
+    //           type="email"
+    //           placeholder="Email"
+    //           onChange={(e) => {
+    //             setEmail(e.target.value);
+    //           }}
+    //         />
+    //       </div>
+    //       <div className="auth-group">
+    //         <i className="fa-solid fa-phone icon"></i>
+    //         <input
+    //           className="auth-input"
+    //           type="tel"
+    //           placeholder="Phone Number"
+    //           onChange={(e) => {
+    //             setPhoneNumber(e.target.value);
+    //           }}
+    //         />
+    //       </div>
+    //       <div className="auth-group">
+    //         <i className="fa-solid fa-location-dot icon"></i>
+    //         <input
+    //           className="auth-input"
+    //           type="text"
+    //           placeholder="Location"
+    //           onChange={(e) => {
+    //             setLocation(e.target.value);
+    //           }}
+    //         />
+    //       </div>
+    //       <div className="auth-group">
+    //         <i className="fa-solid fa-lock icon"></i>
+    //         <input
+    //           className="auth-input"
+    //           type="password"
+    //           placeholder="Password"
+    //           onChange={(e) => {
+    //             setPassword(e.target.value);
+    //           }}
+    //         />
+    //       </div>
+    //       <div
+    //         className="auth-group"
+    //         style={{ justifyContent: "center" }}
+    //         onClick={onSubmit}
+    //       >
+    //         <AuthButton title={loading ? "Loading" : "Get Started"} />
+    //       </div>
+    //     </div>
+    //   </div>
+    // </div>
+    <div className="min-h-screen bg-gray-100 text-gray-900 flex justify-center">
+      <div className="flex justify-center flex-1">
+        <div className="lg:w-1/2 xl:w-5/12 p-6 sm:p-12">
+          <div className="text-center text-lg">
+            {/* <img
+              src="https://storage.googleapis.com/devitary-image-host.appspot.com/15846435184459982716-LogoMakr_7POjrN.png"
+              className="w-32 mx-auto"
+            /> */}
+            <Link to="/"> Learnerby</Link>
+          </div>
+          <div className="mt-6 flex flex-col items-center">
+            <h1 className="text-2xl xl:text-3xl font-extrabold mb-4">Join</h1>
+
+            <div className="font-bold text-center text-wrap">
+              {msg.length > 1 ? (
+                <p
+                  className="auth-response"
+                  style={{ color: `${error ? "Red" : "#00e409"}` }}
+                >
+                  {msg}
+                </p>
+              ) : null}
+            </div>
+
+            <div className="w-full flex-1 mt-8">
+              <div className="mx-auto max-w-xs">
+                <input
+                  className="w-full px-8 py-4 rounded-lg font-medium border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
+                  type="text"
+                  placeholder="Name"
+                  onChange={(e) => {
+                    setName(e.target.value);
+                  }}
+                />
+                <input
+                  className="w-full px-8 py-4 rounded-lg font-medium border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-3"
+                  type="email"
+                  placeholder="Email"
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                  }}
+                />
+                <input
+                  className="w-full px-8 py-4 rounded-lg font-medium border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-3"
+                  type="text"
+                  placeholder="Phone"
+                  onChange={(e) => {
+                    setPhoneNumber(e.target.value);
+                  }}
+                />
+                <input
+                  className="w-full px-8 py-4 rounded-lg font-medium border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-3"
+                  type="text"
+                  placeholder="Location"
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                  }}
+                />
+                <input
+                  className="w-full px-8 py-4 rounded-lg font-medium border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-3"
+                  type="password"
+                  placeholder="Password"
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                  }}
+                />
+                <button
+                  className="mt-5 tracking-wide font-semibold bg-indigo-500 text-gray-100 w-full py-4 rounded-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none"
+                  onClick={onSubmit}
+                >
+                  <svg
+                    className="w-6 h-6 -ml-2"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                    <circle cx="8.5" cy="7" r="4" />
+                    <path d="M20 8v6M23 11h-6" />
+                  </svg>
+                  <span className="ml-3">
+                    {loading ? "Loading" : "Get Started"}
+                  </span>
+                </button>
+                <p className="mt-6 text-xs text-gray-600 text-center text-sm">
+                  Already have an account?
+                  <Link
+                    to="/auth/student/login"
+                    className="ml-2 text-base font-bold text-indigo-700"
+                  >
+                    Login
+                  </Link>
+                </p>
+              </div>
+            </div>
           </div>
         </div>
-        <div className="learnerby-auth-right-form-container">
-          {/* show this when any response is there */}
-          {msg.length > 1 ? (
-            <div
-              className="auth-response"
-              style={{ color: `${error ? "Red" : "#00e409"}` }}
-            >
-              {msg}
-            </div>
-          ) : null}
-          <div className="auth-group">
-            <i className="fa-solid fa-user icon"></i>
-            <input
-              className="auth-input"
-              type="text"
-              placeholder="Name"
-              onChange={(e) => {
-                setName(e.target.value);
-              }}
-            />
-          </div>
-          <div className="auth-group">
-            <i className="fa-solid fa-envelope icon"></i>
-            <input
-              className="auth-input"
-              type="email"
-              placeholder="Email"
-              onChange={(e) => {
-                setEmail(e.target.value);
-              }}
-            />
-          </div>
-          <div className="auth-group">
-            <i className="fa-solid fa-phone icon"></i>
-            <input
-              className="auth-input"
-              type="tel"
-              placeholder="Phone Number"
-              onChange={(e) => {
-                setPhoneNumber(e.target.value);
-              }}
-            />
-          </div>
-          <div className="auth-group">
-            <i className="fa-solid fa-location-dot icon"></i>
-            <input
-              className="auth-input"
-              type="text"
-              placeholder="Location"
-              onChange={(e) => {
-                setLocation(e.target.value);
-              }}
-            />
-          </div>
-          <div className="auth-group">
-            <i className="fa-solid fa-lock icon"></i>
-            <input
-              className="auth-input"
-              type="password"
-              placeholder="Password"
-              onChange={(e) => {
-                setPassword(e.target.value);
-              }}
-            />
-          </div>
+        <div className="flex-1 bg-indigo-100 text-center hidden lg:flex">
           <div
-            className="auth-group"
-            style={{ justifyContent: "center" }}
-            onClick={onSubmit}
-          >
-            <AuthButton title={loading ? "Loading" : "Get Started"} />
-          </div>
+            className="m-12 xl:m-16 w-full bg-contain bg-center bg-no-repeat"
+            style={{
+              backgroundImage: `url(
+                  "https://storage.googleapis.com/devitary-image-host.appspot.com/15848031292911696601-undraw_designer_life_w96d.svg"
+                )`,
+            }}
+          ></div>
         </div>
       </div>
     </div>

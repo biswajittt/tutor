@@ -113,7 +113,7 @@ const loginStudent = asyncHandler(async (req, res) => {
 
   //get data req body
   const { email, password } = req.body;
-  console.log(email, password);
+
   //check email
   if (!email) {
     return res.status(400).json(new ApiError(400, "Email Id required"));
@@ -121,9 +121,9 @@ const loginStudent = asyncHandler(async (req, res) => {
 
   //find user
   const user = await Student.findOne({ email });
-
+  // console.log(user);
   //check user
-  if (!user) {
+  if (!user || user === null) {
     return res.status(404).json(new ApiError(404, "User does not exist"));
   }
 

@@ -6,13 +6,14 @@ import { Student } from "../models/student.model.js";
 import jwt from "jsonwebtoken"; // Make sure this import exists
 
 const checkIfLoggedIn = asyncHandler(async (req, res) => {
-  // console.log(req.cookies); // Log the cookies
+  // console.log(req.cookies.accessToken); // Log the cookies
   try {
     const token =
       req.cookies?.accessToken ||
       req.header("Authorization")?.replace("Bearer ", "");
-    // console.log(token);
-    if (!token) {
+
+    if (!token || token === undefined) {
+      console.log(token);
       return res
         .status(401)
         .json(new ApiError(401, { message: "User not logged in" }));

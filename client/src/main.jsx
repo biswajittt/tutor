@@ -18,9 +18,8 @@ import AuthWrapper from "./AuthWrapper.jsx";
 import ProtectedRoute from "./ProtectedRoute.jsx";
 import StudentSignup from "./components/Join/Student/Signup/StudentSignup.jsx";
 import StudentSignin from "./components/Join/Student/Signin/StudentSignin.jsx";
-import StudentDashboard from "./components/Dashboard/Student/StudentDashboard.jsx";
-import StudentProfile from "./components/Dashboard/Student/StudentProfile.jsx";
-import StudentClasses from "./components/Dashboard/Student/StudentClasses.jsx";
+import StudentDashboard from "./components/Dashboard/Student/dashboard/StudentDashboard.jsx";
+import StudentProfile from "./components/Dashboard/Student/sections/StudentProfile.jsx";
 // import MentorDashboard from "./components/Dashboard/Mentor/MentorDashboard.jsx";
 import Page from "./components/Dashboard/Mentor/app/dashboard/page.jsx";
 import MentorProfile from "./components/Dashboard/Mentor/Sections/MentorProfile.jsx";
@@ -29,6 +28,8 @@ import CheckoutForm from "./components/StripePayment/CheckoutForm.jsx";
 import CompletePage from "./components/StripePayment/CompletePage.jsx";
 import { Provider } from "react-redux";
 import { store } from "./app/store.js";
+import BookingandClasses from "./components/Dashboard/Student/sections/BookingandClasses.jsx";
+import NotFound from "./components/NotFound/NotFound.jsx";
 // import PP from "./components/Payment/pp.jsx";
 // import Apps from "./components/Payment/temp/app.jsx";
 // import Return from "./components/Payment/temp/Return.jsx";
@@ -66,7 +67,7 @@ const router = createBrowserRouter(
         <Route path="student/dashboard" element={<StudentDashboard />}>
           {/* Default route for the dashboard */}
           <Route index element={<StudentProfile />} />
-          <Route path="classes" element={<StudentClasses />} />
+          <Route path="classes" element={<BookingandClasses />} />
         </Route>
 
         {/* mentor dashboard */}
@@ -84,6 +85,8 @@ const router = createBrowserRouter(
           element={<CompletePage />}
         /> */}
       </Route>
+
+      <Route path="*" element={<NotFound />} />
     </Route>
   )
 );

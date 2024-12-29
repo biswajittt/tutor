@@ -31,6 +31,8 @@ import studentRouter from "./routes/student.routes.js";
 import bookClassRouter from "./routes/bookclass.routes.js";
 import mentorRouter from "./routes/mentor.routes.js";
 import authRouter from "./routes/auth.routes.js";
+import userRouter from "./routes/user.routes.js";
+import connectionRouter from "./routes/connection.routes.js";
 //routes declaration
 /*auth route*/
 app.use("/api/v1", authRouter);
@@ -38,4 +40,9 @@ app.use("/api/v1", authRouter);
 app.use("/api/v1/student/", studentRouter); // redirectiong to 'userRouter after '
 app.use("/api/v1/bookclass", bookClassRouter);
 app.use("/api/v1/mentor/", mentorRouter);
+
+/* connection route */
+app.use("/api/v1/mentor/connection/", connectionRouter);
+//common for all user
+app.use("/api/v1/user/", userRouter);
 export { app };

@@ -4,13 +4,18 @@ import useAuth from "../../handler/useAuth.js";
 import { Avatar, Dropdown, Navbar, Button } from "flowbite-react";
 import { useDispatch } from "react-redux";
 import { clickedOnJoinButton } from "../../features/joinModal/joinModalSlice.js";
+import { clickedOnMentorMessageButton } from "@/features/mentorMessageBox/mentorMessageBoxSlice.js";
 
 export default function NavBar() {
   //check authenticated or not
   const { isAuthenticated, user } = useAuth();
+  // console.log(user);
   //using redux -- dispatch
   const dispatch = useDispatch();
   const joinModalHandler = (event) => {
+    //if other modal are opne then close them first
+    dispatch(clickedOnMentorMessageButton(false));
+    //then show mentor box
     dispatch(clickedOnJoinButton(true));
   };
   return (
@@ -45,7 +50,13 @@ export default function NavBar() {
                   biswajit@gmail.com
                 </span>
               </Dropdown.Header>
-              <Dropdown.Item>Dashboard</Dropdown.Item>
+              <Dropdown.Item>
+                {isAuthenticated && user?.expertise ? (
+                  <Link to="mentor/dashboard">Dashboard</Link>
+                ) : (
+                  <Link to="student/dashboard">Dashboard</Link>
+                )}
+              </Dropdown.Item>
               <Dropdown.Item>Settings</Dropdown.Item>
               <Dropdown.Item>Earnings</Dropdown.Item>
               <Dropdown.Divider />

@@ -1,12 +1,11 @@
 import axios from "axios";
-
-export const handleStudentLogin = async (email, password) => {
+export const handleMentorMessage = async (mentorId, message) => {
   try {
     const res = await axios.post(
-      `http://localhost:8000/api/v1/student/auth/login`,
+      `http://localhost:8000/api/v1/mentor/connection/send-message`,
       {
-        email,
-        password,
+        mentorId,
+        message,
       },
       {
         withCredentials: true, // Include cookies in the request
@@ -19,4 +18,4 @@ export const handleStudentLogin = async (email, password) => {
     return error?.response;
   }
 };
-export default handleStudentLogin;
+export default handleMentorMessage;

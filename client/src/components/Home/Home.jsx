@@ -3,6 +3,8 @@ import HomeHeader from "../Utilities/PageHeader/PageHeader.jsx";
 import HomeCardScroller from "./HomeCardScroller/HomeCardScroller.jsx";
 import MentorSection from "./NewArrival/MentorSection.jsx";
 import NavBar from "../Navbar/Navbar.jsx";
+import FiftyPercentOff from "./FiftyPercentOff/FiftyPercentOff.jsx";
+import Footer from "./Footer/Footer.jsx";
 
 export default function Home() {
   return (
@@ -17,6 +19,8 @@ export default function Home() {
         />
         <HomeCardScroller />
         <MentorSection />
+        <FiftyPercentOff />
+        <Footer />
       </div>
     </>
   );

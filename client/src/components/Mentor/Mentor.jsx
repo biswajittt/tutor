@@ -20,7 +20,36 @@ import { useNavigate, useParams } from "react-router-dom";
 import fetchingMentorDetailsByIdHandler from "../../handler/fetching/fetchingMentorDetailsByIdHandler";
 import Rating from "../Utilities/Rating/Rating";
 import handleShortClassBooking from "@/handler/handleShortClassBooking";
+import useAuth from "@/handler/useAuth";
+import { useDispatch, useSelector } from "react-redux";
+import { clickedOnJoinButton } from "@/features/joinModal/joinModalSlice";
+import { clickedOnMentorMessageButton } from "@/features/mentorMessageBox/mentorMessageBoxSlice";
+import MessageBox from "./MessageBox/MessageBox";
+
 export default function Mentor() {
+  //check authenticated or not
+  const { isAuthenticated, user } = useAuth();
+  //using redux -- dispatch
+  const dispatch = useDispatch();
+  const joinModalHandler = (event) => {
+    //if other modal are opne then close them first
+    dispatch(clickedOnMentorMessageButton(false));
+    //then show mentor box
+    dispatch(clickedOnJoinButton(true));
+  };
+  // mentor message box handler from redux
+  const openMessageBox = useSelector(
+    (state) => state.mentorMessageBox.showMentorMessageBox
+  );
+  console.log(openMessageBox);
+  const mentorMessageBoxHandler = (event) => {
+    //if other modal are opne then close them first
+    dispatch(clickedOnJoinButton(false));
+    //then show mentor box
+    dispatch(clickedOnMentorMessageButton(true));
+  };
+  /*redux end*/
+
   const navigate = useNavigate();
   const { mentorId } = useParams(); // Get the mentor ID from the URL
   const [showLoading, setShowLoading] = useState(true);
@@ -52,105 +81,34 @@ export default function Mentor() {
 
   //short class handler
   const shortClassHandler = async (mentorId) => {
-    console.log(mentorId);
-    navigate("/student/book-class/payment", {
-      state: {
-        mentorId: mentorId,
-        classType: shortClass,
-      },
-    });
-    // const response = await handleShortClassBooking(mentorId);
-    // console.log(response);
+    if (isAuthenticated === false) {
+      console.log(mentorId);
+      joinModalHandler();
+    } else {
+      navigate("/student/book-class/payment", {
+        state: {
+          mentorId: mentorId,
+          classType: shortClass,
+        },
+      });
+      const response = await handleShortClassBooking(mentorId);
+      console.log(response);
+    }
   };
   //monthly class handler
   const monthlyClassHandler = async (mentorId) => {
     console.log(mentorId);
   };
+
   return (
-    // <>
-    //   <NavBar />
-    //   {showLoading && mentorDetails === null ? (
-    //     "Loading"
-    //   ) : (
-    //     <div className="learnerby-mentor">
-    //       <div className="learnerby-mentor-left">
-    //         <div className="learnerby-mentor-left-header-section">
-    //           <img
-    //             src={mentorDetails.mentorImage}
-    //             alt=""
-    //             className="learnerby-mentor-left-header-section-mentor-logo"
-    //           />
-    //           <div className="learnerby-mentor-left-header-section-mentor-name">
-    //             {mentorDetails.name}
-    //           </div>
-    //           <div className="learnerby-mentor-left-header-section-mentor-gender-age">
-    //             Male . 30 years
-    //           </div>
-    //           <div className="learnerby-mentor-left-header-section-mentor-contact-list"></div>
-    //         </div>
-    //         <div className="learnerby-mentor-vertical-line"></div>
-    //         <div className="learnerby-mentor-left-mentor-about">
-    //           <div className="about-title"> About</div>
-    //           <div className="about">{mentorDetails.aboutYou}</div>
-    //         </div>
-    //         <div className="learnerby-mentor-vertical-line"></div>
-    //         <div className="learnerby-mentor-left-mode-of-class-section">
-    //           <div>Mode of Class</div>
-    //           <div className="learnerby-mentor-left-mode-of-class">
-    //             {mentorDetails.mode === "both" ? (
-    //               <>
-    //                 <p>Offline</p> <p>Online</p>
-    //               </>
-    //             ) : (
-    //               mentorDetails.mode
-    //             )}
-    //           </div>
-    //         </div>
-    //         <div className="learnerby-mentor-vertical-line"></div>
-    //         <div className="learnerby-mentor-left-specialization-section">
-    //           <div>Expertise</div>
-    //           <div className="learnerby-mentor-left-specializations">
-    //             {mentorDetails.expertise.map((data, index) => (
-    //               <p key={index}>{data}</p>
-    //             ))}
-    //           </div>
-    //         </div>
-    //         <div className="learnerby-mentor-left-rating-review-section">
-    //           <div className="rating-review-text">Community</div>
-    //           <div className="rating-review">
-    //             <div className="rating-review-taught-student">
-    //               <i className="fa-solid fa-user-group"></i>{" "}
-    //               <span style={{ color: "black" }}>1k+ Students</span>
-    //             </div>
-    //             <div className="rating-review-ratings">
-    //               <i className="fa-solid fa-star"></i>{" "}
-    //               <span style={{ color: "black" }}>560 Ratings</span>
-    //             </div>
-    //             <div className="rating-review-reviews">
-    //               <i className="fa-solid fa-comments"></i>{" "}
-    //               <span style={{ color: "black" }}> 340 Reviews</span>
-    //             </div>
-    //           </div>
-    //         </div>
-    //         <div className="learnerby-mentor-vertical-line"></div>
-    //       </div>
-    //       <div className="learnerby-mentor-right">
-    //         <Package
-    //           mentorId={mentorDetails._id}
-    //           shortClassPrice={mentorDetails.shortClassPrice}
-    //           monthlyClassPrice={mentorDetails.monthlyClassPrice}
-    //         />
-    //       </div>
-    //     </div>
-    //   )}
-    // </>
     <>
+      {openMessageBox === true ? <MessageBox /> : null}
       <NavBar />
       <div className="flex justify-start mt-20">
         <div className="ml-10 ">
           <Card className="mb-2">
             <CardContent>
-              <div className="flex items-center w-96 h-28 px-4 py-4">
+              <div className="flex items-center justify-between w-96 h-28 px-4 py-4">
                 <Avatar className="w-20 h-20">
                   <AvatarImage src={mentorDetails?.mentorImage} alt="@shadcn" />
                   <AvatarFallback>Learnerby</AvatarFallback>
@@ -172,6 +130,7 @@ export default function Mentor() {
                       <span>{mentorDetails?.location}</span>
                     </p>
                   </div>
+
                   {/* <div className="flex gap-3 pt-2 pl-3">
                         <svg
                           stroke="currentColor"
@@ -204,6 +163,15 @@ export default function Mentor() {
                         </svg>
                       </div> */}
                 </section>
+                <button
+                  type="button"
+                  class="text-gray-900 bg-white hover:bg-gray-100 border border-gray-400 border-solid focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-2.5 text-center inline-flex items-center dark:focus:ring-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700 me-2 mb-2"
+                  onClick={() => {
+                    mentorMessageBoxHandler();
+                  }}
+                >
+                  Message
+                </button>
               </div>
             </CardContent>
           </Card>

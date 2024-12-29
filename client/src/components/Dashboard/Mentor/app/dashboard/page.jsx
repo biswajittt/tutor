@@ -14,7 +14,16 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Outlet } from "react-router-dom";
+import useAuth from "@/handler/useAuth";
+import { Navigate } from "react-router-dom";
 export default function Page() {
+  // //check authenticated or not
+  // const { isAuthenticated, user, userType } = useAuth();
+  // // Redirect to a specific route if the user is not a student
+  // console.log(userType);
+  // if (userType !== "mentor") {
+  //   return <Navigate to="/page-not-found" replace />;
+  // }
   return (
     <SidebarProvider>
       <AppSidebar />

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 const useAuth = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(null); // Start with `null` for loading state
   const [user, setUser] = useState(null); // To store user data
+  const [userType, setUserType] = useState(null); // To store user type
   const navigate = useNavigate();
   useEffect(() => {
     const checkAuthentication = async () => {
@@ -24,6 +25,7 @@ const useAuth = () => {
         else if (response?.data?.user) {
           setIsAuthenticated(true);
           setUser(response.data.user); // Store user data in state
+          setUserType(response.data.userType);
         } else {
           setIsAuthenticated(false);
         }
@@ -46,7 +48,7 @@ const useAuth = () => {
     checkAuthentication();
   }, []);
 
-  return { isAuthenticated, user }; // Return `isAuthenticated ->  // Returns `true`, `false`, or `null` (loading)` and `user` data
+  return { isAuthenticated, user, userType }; // Return `isAuthenticated ->  // Returns `true`, `false`, or `null` (loading)` and `user` data
 };
 
 export default useAuth;
