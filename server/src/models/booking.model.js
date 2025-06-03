@@ -4,51 +4,81 @@ const bookingSchema = new Schema(
   {
     classType: {
       type: String,
+      enum: ["short", "long"],
       required: true,
-      // enum: ["short", "monthly"], // To ensure only "short" or "monthly" is allowed
+    },
+    mode: {
+      type: String,
+      enum: ["online", "offline"],
+      required: true,
+    },
+    subject: { type: String, required: true },
+
+    studentId: {
+      type: Schema.Types.ObjectId,
+      ref: "Student",
+      required: true,
+      index: true, // Optimized lookup
+    },
+    mentorId: {
+      type: Schema.Types.ObjectId,
+      ref: "Mentor",
+      required: true,
+      index: true, // Optimized lookup
+    },
+    scheduledDate: {
+      type: Date,
+      required: true,
+    },
+    scheduledStartTime: {
+      type: Date,
+      required: true,
+    },
+    scheduledEndTime: {
+      type: Date,
+      required: true,
+    },
+    durationMinutes: {
+      type: Number,
+      required: true,
+      min: 1, // Prevents invalid durations
     },
     bookingTime: {
       type: Date,
       required: true,
+      default: Date.now, // Stores when the user booked the class
     },
-    bookingDate: {
-      type: Date,
-      required: true,
-      default: Date.now, // Defaults to the current date
-    },
-    studentDetails: {
-      studentId: {
-        type: Schema.Types.ObjectId,
-        ref: "Student",
-        required: true,
-      },
-      studentName: { type: String, required: true },
-      studentEmail: { type: String, required: true },
-      studentPhoneNumber: { type: String, required: true },
-    },
-    mentorDetails: {
-      mentorId: { type: Schema.Types.ObjectId, ref: "Mentor", required: true },
-      mentorName: { type: String, required: true },
-      mentorEmail: { type: String, required: true },
-    },
-    paymentInformation: {
-      paymentId: { type: String, required: true },
-      amountPaid: { type: Number, required: true },
-      paymentDate: { type: Date, default: Date.now },
-      paymentStatus: {
-        type: String,
-        required: true,
-        enum: ["successful", "pending", "failed"], // Payment status options
-      },
-    },
+
     classStatus: {
       type: String,
-      default: "active", // Default status is "active"
-      enum: ["active", "started", "done", "cancelled"], // Allowed values for class status
+      enum: ["scheduled", "started", "completed", "canceled"],
+      default: "scheduled",
+    },
+
+    classLink: {
+      type: String,
+      default: null, // Used for online classes
+      // validate: {
+      //   validator: function (v) {
+      //     return this.mode === "online" ? !!v : true;
+      //   },
+      //   message: "Class link is required for online classes.",
+      // },
+    },
+
+    paymentInfo: {
+      paymentId: { type: String, required: true },
+      amountPaid: { type: Number, required: true, min: 0 },
+      paymentStatus: {
+        type: String,
+        enum: ["pending", "paid", "failed"],
+        required: true,
+      },
+      paymentDate: { type: Date, default: Date.now },
     },
   },
   { timestamps: true }
 );
 
-// Export the Bookings model
+// Export the Booking model
 export const Booking = mongoose.model("Booking", bookingSchema);

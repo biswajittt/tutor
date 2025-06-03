@@ -8,10 +8,11 @@ export default function validateMentorSignupdata(
   phone,
   location,
   mode,
-  expertise,
+  subjects,
   shortClassPrice,
-  monthlyClassPrice,
-  password
+  shortClassDuration,
+  password,
+  availability
 ) {
   // Validate mentorImage: must be provided and should be a string (assuming it’s a URL or file path)
   if (
@@ -51,9 +52,28 @@ export default function validateMentorSignupdata(
   ) {
     return false;
   }
-  // Validate mode of teaching
-  if (typeof expertise !== "string" || expertise.trim() === "") {
-    return false;
+  // Validate subjects
+  if (
+    !Array.isArray(subjects) ||
+    subjects.length === 0 ||
+    subjects.length > 5 ||
+    (Array.isArray(subjects) &&
+      subjects.some(
+        (subject) => typeof subject !== "string" || subject.trim().length === 0
+      ))
+  ) {
+    if (
+      !Array.isArray(subjects) ||
+      subjects.length === 0 ||
+      subjects.length > 5 ||
+      (Array.isArray(subjects) &&
+        subjects.some(
+          (subject) =>
+            typeof subject !== "string" || subject.trim().length === 0
+        ))
+    ) {
+      return false;
+    }
   }
 
   // Validate mode of teaching
@@ -62,7 +82,11 @@ export default function validateMentorSignupdata(
   }
 
   // Validate mode of teaching
-  if (isNaN(monthlyClassPrice) || monthlyClassPrice <= 0) {
+  if (
+    isNaN(shortClassDuration) ||
+    shortClassDuration < 10 ||
+    shortClassDuration > 60
+  ) {
     return false;
   }
   // Validate customerPhoneNumber (must be a string of exactly 10 digits)
@@ -70,6 +94,9 @@ export default function validateMentorSignupdata(
     console.log("10");
     return false;
   }
-
+  if (!availability) {
+    console.error("Empty Availability");
+    return false;
+  }
   return true;
 }

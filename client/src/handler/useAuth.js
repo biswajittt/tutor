@@ -18,14 +18,14 @@ const useAuth = () => {
         );
 
         console.log("res", response);
-        if (response?.status === 401) {
+        if (response?.data?.statusCode !== 200) {
           setIsAuthenticated(false);
         }
         // If the user is authenticated, set true
-        else if (response?.data?.user) {
+        else if (response?.data?.statusCode === 200) {
           setIsAuthenticated(true);
-          setUser(response.data.user); // Store user data in state
-          setUserType(response.data.userType);
+          setUser(response.data.data.user); // Store user data in state
+          setUserType(response.data.data.userType);
         } else {
           setIsAuthenticated(false);
         }

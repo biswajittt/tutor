@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 import "./navbarsearchinput.css";
 import { useNavigate } from "react-router-dom";
-export default function NavBarSearchInput({ newWidth, newHeight, classname }) {
+export default function NavBarSearchInput({
+  newWidth,
+  newHeight,
+  classname,
+  onChange,
+}) {
   const navigate = useNavigate();
   //store search data
   const [searchData, setSearchData] = useState("");
@@ -10,8 +15,9 @@ export default function NavBarSearchInput({ newWidth, newHeight, classname }) {
     if (searchData.trim() !== "") {
       setSearchData(searchData.trim());
       // navigate(`/search?query=${searchData}`);
-      navigate(`/search?query=${encodeURIComponent(searchData)}`);
+      // navigate(`/search?query=${encodeURIComponent(searchData)}`);
       // console.log(encodeURIComponent(searchData));
+      onChange(searchData.trim());
     }
   }
   return (

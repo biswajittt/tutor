@@ -1,13 +1,9 @@
 import mongoose, { Schema } from "mongoose";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-const mentorScheme = new Schema(
+const mentorSchema = new Schema(
   {
-    name: {
-      type: String,
-      require: true,
-      trim: true,
-    },
+    name: { type: String, required: true, trim: true },
     email: {
       type: String,
       required: true,
@@ -15,95 +11,75 @@ const mentorScheme = new Schema(
       lowercase: true,
       trim: true,
     },
-    mentorImage: {
-      type: String,
-    },
-    aboutYou: {
-      type: String,
-      require: true,
-      trim: true,
-    },
-    phoneNumber: {
-      type: String,
-      require: true,
-    },
-    location: {
-      type: String,
-      require: true,
-    },
-    mode: {
-      type: String,
-      require: true,
-    },
-    expertise: {
-      type: Array,
-      require: true,
-    },
-    shortClassPrice: {
-      type: Number,
-      require: true,
-      trim: true,
-    },
-    monthlyClassPrice: {
-      type: Number,
-      require: true,
-      trim: true,
-    },
-    password: {
-      type: String,
-      required: [true, "Password is required"],
-    },
-    // isEmailVerifiedByOtp: {
-    //   type: Boolean,
-    //   required: true,
-    // },
-    refreshToken: {
-      type: String,
-    },
+    mentorImage: { type: String, default: "" },
+    about: { type: String, required: true, trim: true },
+    phoneNumber: { type: String, required: true, trim: true },
+    location: { type: String, required: true, trim: true },
+    mode: { type: String, required: true, enum: ["Online", "Offline", "Both"] },
+    tags: { type: [String], default: [] },
+    subjects: { type: [String], required: true },
+
+    availability: [
+      {
+        day: { type: String, required: true },
+        timeSlots: [
+          {
+            startTime: { type: String, required: true },
+            endTime: { type: String, required: true },
+          },
+        ],
+      },
+    ],
+
+    rating: { type: Number, default: 0, min: 0, max: 5 },
+    totalReviews: { type: Number, default: 0, min: 0 },
+
+    shortClassPrice: { type: Number, required: true, min: 0 },
+    shortClassDuration: { type: Number, required: true, min: 0 },
+
+    monthlyClassPrice: { type: Number, default: 0, min: 0 },
+    monthlyClassDuration: { type: Number, default: 0, min: 0 },
+    monthlyClassFrequency: { type: Number, default: 0, min: 0 },
+
+    passwordHash: { type: String, required: true }, // Store hashed password
+    refreshToken: { type: String, default: null }, // Security best practice
   },
   { timestamps: true }
 );
 
-// hashing password before saving the data on database and the calling next
-mentorScheme.pre("save", async function (next) {
-  // return if password is not modified again. Only  hash the password first time
-  if (!this.isModified("password")) return next();
-  this.password = await bcrypt.hash(this.password, 10);
+// **🔹 Hash Password Before Saving**
+mentorSchema.pre("save", async function (next) {
+  if (!this.isModified("passwordHash")) return next();
+  this.passwordHash = await bcrypt.hash(this.passwordHash, 10);
   next();
 });
 
-//creating one function to check the password while user login
-mentorScheme.methods.isPasswordCorrect = async function (password) {
-  return bcrypt.compare(password, this.password);
+// **🔹 Verify Password**
+mentorSchema.methods.isPasswordCorrect = async function (password) {
+  return bcrypt.compare(password, this.passwordHash);
 };
 
-//gererating access token (jwt)
-mentorScheme.methods.generateAccessToken = function () {
+// **🔹 Generate Access Token**
+mentorSchema.methods.generateAccessToken = function () {
   return jwt.sign(
     {
       _id: this._id,
       email: this.email,
       name: this.name,
-      userType: "mentor", // add userType
+      userType: "mentor",
     },
     process.env.ACCESS_TOKEN_SECRET,
-    {
-      expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
-    }
+    { expiresIn: process.env.ACCESS_TOKEN_EXPIRY }
   );
 };
 
-//gererating refresh token (jwt) -- have less information
-mentorScheme.methods.generateRefreshToken = function () {
+// **🔹 Generate Refresh Token**
+mentorSchema.methods.generateRefreshToken = function () {
   return jwt.sign(
-    {
-      _id: this._id,
-      userType: "mentor", // add userType
-    },
+    { _id: this._id, userType: "mentor" },
     process.env.REFRESH_TOKEN_SECRET,
-    {
-      expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
-    }
+    { expiresIn: process.env.REFRESH_TOKEN_EXPIRY }
   );
 };
-export const Mentor = mongoose.model("Mentor", mentorScheme);
+
+export const Mentor = mongoose.model("Mentor", mentorSchema);

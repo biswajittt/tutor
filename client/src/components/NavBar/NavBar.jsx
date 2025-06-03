@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import useAuth from "../../handler/useAuth.js";
 import { Avatar, Dropdown, Navbar, Button } from "flowbite-react";
 import { useDispatch } from "react-redux";
 import { clickedOnJoinButton } from "../../features/joinModal/joinModalSlice.js";
 import { clickedOnMentorMessageButton } from "@/features/mentorMessageBox/mentorMessageBoxSlice.js";
+import handleSignOut from "../../handler/signOutHandler.js";
 
 export default function NavBar() {
+  const navigate = useNavigate();
   //check authenticated or not
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, userType } = useAuth();
   // console.log(user);
   //using redux -- dispatch
   const dispatch = useDispatch();
@@ -17,6 +19,19 @@ export default function NavBar() {
     dispatch(clickedOnMentorMessageButton(false));
     //then show mentor box
     dispatch(clickedOnJoinButton(true));
+  };
+
+  const [logOutLoading, setLogOutLoading] = useState(false);
+  //logout funtion
+  const logOutHandler = async () => {
+    setLogOutLoading(true);
+    const response = await handleSignOut();
+    if (response?.data?.statusCode === 200) {
+      setLogOutLoading(false);
+      navigate("/"); // Redirect to the home page or login page
+      return;
+    }
+    setLogOutLoading(false);
   };
   return (
     <Navbar className="fixed w-full z-20 top-0 start-0 pr-4 pl-4 pb-2 pt-2">
@@ -37,21 +52,20 @@ export default function NavBar() {
               arrowIcon={false}
               inline
               label={
-                <Avatar
-                  alt="User settings"
-                  img="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
-                  rounded
-                />
+                <Avatar alt="User settings" img={user?.mentorImage} rounded />
               }
             >
               <Dropdown.Header>
-                <span className="block text-sm">Biswajit Debnath</span>
+                <span className="block text-sm">{user?.name}</span>
                 <span className="block truncate text-sm font-medium">
-                  biswajit@gmail.com
+                  {user?.email}
                 </span>
               </Dropdown.Header>
               <Dropdown.Item>
-                {isAuthenticated && user?.expertise ? (
+                {isAuthenticated &&
+                user?.subjects &&
+                user?.mentorImage &&
+                userType === "mentor" ? (
                   <Link to="mentor/dashboard">Dashboard</Link>
                 ) : (
                   <Link to="student/dashboard">Dashboard</Link>
@@ -60,7 +74,9 @@ export default function NavBar() {
               <Dropdown.Item>Settings</Dropdown.Item>
               <Dropdown.Item>Earnings</Dropdown.Item>
               <Dropdown.Divider />
-              <Dropdown.Item>Sign out</Dropdown.Item>
+              <Dropdown.Item onClick={logOutHandler}>
+                {logOutLoading ? "Loading..." : "Sign out"}
+              </Dropdown.Item>
             </Dropdown>
             <Navbar.Toggle />
           </>

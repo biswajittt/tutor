@@ -5,18 +5,19 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import jwt from "jsonwebtoken";
 
 export const verifyJWT = asyncHandler(async (req, res, next) => {
+  // console.log("hi");
   try {
     const token =
       req.cookies?.accessToken ||
       req.header("Authorization")?.replace("Bearer ", "");
-
+    // console.log(token);
     if (!token) {
       return res
         .status(401)
         .json(new ApiError(401, "Access denied. No token provided."));
     }
     const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-
+    // console.log(decodedToken);
     //check user type
     const userType = decodedToken?.userType;
     let user;

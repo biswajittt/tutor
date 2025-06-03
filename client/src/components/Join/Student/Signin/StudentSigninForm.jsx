@@ -10,7 +10,7 @@
 // import { Label } from "@/components/ui/label";
 
 import React from "react";
-import img from "../../section.jpg";
+import img from "../../section.png";
 import AuthButton from "../../../Utilities/AuthButton/AuthButton";
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -56,13 +56,9 @@ export default function StudentSigninForm() {
       // data.append("location", location);
       // data.append("password", password);
       const res = await handleStudentLogin(email, password);
-      if (res?.status === 409) {
+      if (res?.status === 404) {
         setError(true);
-        setMsg("User Already Exist");
-        return;
-      } else if (res?.status === 500) {
-        setError(true);
-        setMsg("Something went wrong while login user");
+        setMsg("User Not Exist");
         return;
       } else if (res?.status === 200) {
         setError(false);
@@ -70,7 +66,12 @@ export default function StudentSigninForm() {
         // if success then clean all the data then redirect
         if (res?.status === 200) {
           navigate("/");
+          // location.reload();
         }
+      } else if (res?.status === 500 || res?.status === 409) {
+        setError(true);
+        setMsg("Something went wrong while login user");
+        return;
       }
       // console.log(res);
     }
@@ -138,7 +139,9 @@ export default function StudentSigninForm() {
                     <circle cx="8.5" cy="7" r="4" />
                     <path d="M20 8v6M23 11h-6" />
                   </svg>
-                  <span className="ml-3">Sign In</span>
+                  <span className="ml-3">
+                    {loading ? "Loading..." : "Sign In"}
+                  </span>
                 </button>
                 <p className="mt-6 text-xs text-gray-600 text-center text-sm">
                   Don't have account?

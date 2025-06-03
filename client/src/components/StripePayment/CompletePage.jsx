@@ -3,6 +3,8 @@ import { useStripe } from "@stripe/react-stripe-js";
 import "./payment.css";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { useOutletContext } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
 const SuccessIcon = (
   <svg
@@ -89,23 +91,33 @@ const STATUS_CONTENT_MAP = {
 };
 
 export default function CompletePage() {
+  // const { classData } = useOutletContext();
+  // console.log("classData", classData);
+  const classData = useSelector((state) => state.classData.classData);
+  console.log("classData", classData);
   const stripe = useStripe();
-
   const [status, setStatus] = useState("default");
   const [intentId, setIntentId] = useState(null);
   const [paymentIntentData, setPaymentIntentData] = useState(null);
-
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const bookClass = async (id, amount, status) => {
     const res = await axios.post(
       "http://localhost:8000/api/v1/bookclass/book-class",
-      { id, amount, status },
+      { id, amount, status, classData },
       {
         withCredentials: true, // Include cookies in the request
       }
     );
-    console.log(res);
+    if (res?.data?.statusCode === 200) {
+      setError(false);
+    } else {
+      setError(true);
+    }
+    console.log("class booked data: ", res?.data?.statusCode);
   };
   useEffect(() => {
+    setLoading(true);
     if (!stripe) {
       return;
     }
@@ -124,82 +136,98 @@ export default function CompletePage() {
 
       setStatus(paymentIntent.status);
       setIntentId(paymentIntent.id);
-      setPaymentIntentData(paymentIntent);
+      // setPaymentIntentData(paymentIntent);
+      // --- CRITICAL CHANGE: Call bookClass here if payment is successful ---
+      if (paymentIntent?.status === "succeeded" && paymentIntent?.id) {
+        console.log("succes");
+        const { id, amount, status } = paymentIntent;
+        bookClass(id, amount, status);
+      }
     });
+    setLoading(false);
     console.log("paymentIntentData", paymentIntentData);
   }, [stripe]);
 
-  useEffect(() => {
-    //if payment success then save the data
-    if (status === "succeeded" && intentId) {
-      console.log("succes");
-      const { id, amount, status } = paymentIntentData;
-      bookClass(id, amount, status);
-    }
-  }, [status]);
-
-  return (
-    <div id="payment-status">
-      <div
-        id="status-icon"
-        style={{ backgroundColor: STATUS_CONTENT_MAP[status].iconColor }}
-      >
-        {STATUS_CONTENT_MAP[status].icon}
+  // useEffect(() => {
+  //   //if payment success then save the data
+  //   if (status === "succeeded" && intentId) {
+  //     console.log("succes");
+  //     const { id, amount, status } = paymentIntentData;
+  //     bookClass(id, amount, status);
+  //   }
+  // }, [status]);
+  if (loading) {
+    return (
+      <div className="loading mt-6">
+        Loading...
+        <br />
+        Please do not close the window!
       </div>
-      <h2 id="status-text">{STATUS_CONTENT_MAP[status].text}</h2>
-      {intentId && (
-        <div id="details-table">
-          <table>
-            <tbody>
-              <tr>
-                <td className="TableLabel">id</td>
-                <td id="intent-id" className="TableContent">
-                  {intentId}
-                </td>
-              </tr>
-              <tr>
-                <td className="TableLabel">status</td>
-                <td id="intent-status" className="TableContent">
-                  {status}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      )}
-      {/* {intentId && (
-        <a
-          href={`https://dashboard.stripe.com/payments/${intentId}`}
-          id="view-details"
-          rel="noopener noreferrer"
-          target="_blank"
+    );
+  } else {
+    return (
+      <div id="payment-status">
+        <div
+          id="status-icon"
+          style={{ backgroundColor: STATUS_CONTENT_MAP[status].iconColor }}
         >
-          View details
-          <svg
-            width="15"
-            height="14"
-            viewBox="0 0 15 14"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            style={{ paddingLeft: "5px" }}
-          >
-            <path
-              fillRule="evenodd"
-              clipRule="evenodd"
-              d="M3.125 3.49998C2.64175 3.49998 2.25 3.89173 2.25 4.37498V11.375C2.25 11.8582 2.64175 12.25 3.125 12.25H10.125C10.6082 12.25 11 11.8582 11 11.375V9.62498C11 9.14173 11.3918 8.74998 11.875 8.74998C12.3582 8.74998 12.75 9.14173 12.75 9.62498V11.375C12.75 12.8247 11.5747 14 10.125 14H3.125C1.67525 14 0.5 12.8247 0.5 11.375V4.37498C0.5 2.92524 1.67525 1.74998 3.125 1.74998H4.875C5.35825 1.74998 5.75 2.14173 5.75 2.62498C5.75 3.10823 5.35825 3.49998 4.875 3.49998H3.125Z"
-              fill="#0055DE"
-            />
-            <path
-              d="M8.66672 0C8.18347 0 7.79172 0.391751 7.79172 0.875C7.79172 1.35825 8.18347 1.75 8.66672 1.75H11.5126L4.83967 8.42295C4.49796 8.76466 4.49796 9.31868 4.83967 9.66039C5.18138 10.0021 5.7354 10.0021 6.07711 9.66039L12.7501 2.98744V5.83333C12.7501 6.31658 13.1418 6.70833 13.6251 6.70833C14.1083 6.70833 14.5001 6.31658 14.5001 5.83333V0.875C14.5001 0.391751 14.1083 0 13.6251 0H8.66672Z"
-              fill="#0055DE"
-            />
-          </svg>
-        </a>
-      )} */}
-      {/* <a id="retry-button" href="/checkout"></a> */}
-      <Link id="retry-button" to="/">
-        Go to Home
-      </Link>
-    </div>
-  );
+          {STATUS_CONTENT_MAP[status].icon}
+        </div>
+        <h2 id="status-text">{STATUS_CONTENT_MAP[status].text}</h2>
+        {intentId && error === false && (
+          <div id="details-table">
+            <table>
+              <tbody>
+                <tr>
+                  <td className="TableLabel">id</td>
+                  <td id="intent-id" className="TableContent">
+                    {intentId}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="TableLabel">status</td>
+                  <td id="intent-status" className="TableContent">
+                    {status}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        )}
+        {/* {intentId && (
+      <a
+        href={`https://dashboard.stripe.com/payments/${intentId}`}
+        id="view-details"
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        View details
+        <svg
+          width="15"
+          height="14"
+          viewBox="0 0 15 14"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          style={{ paddingLeft: "5px" }}
+        >
+          <path
+            fillRule="evenodd"
+            clipRule="evenodd"
+            d="M3.125 3.49998C2.64175 3.49998 2.25 3.89173 2.25 4.37498V11.375C2.25 11.8582 2.64175 12.25 3.125 12.25H10.125C10.6082 12.25 11 11.8582 11 11.375V9.62498C11 9.14173 11.3918 8.74998 11.875 8.74998C12.3582 8.74998 12.75 9.14173 12.75 9.62498V11.375C12.75 12.8247 11.5747 14 10.125 14H3.125C1.67525 14 0.5 12.8247 0.5 11.375V4.37498C0.5 2.92524 1.67525 1.74998 3.125 1.74998H4.875C5.35825 1.74998 5.75 2.14173 5.75 2.62498C5.75 3.10823 5.35825 3.49998 4.875 3.49998H3.125Z"
+            fill="#0055DE"
+          />
+          <path
+            d="M8.66672 0C8.18347 0 7.79172 0.391751 7.79172 0.875C7.79172 1.35825 8.18347 1.75 8.66672 1.75H11.5126L4.83967 8.42295C4.49796 8.76466 4.49796 9.31868 4.83967 9.66039C5.18138 10.0021 5.7354 10.0021 6.07711 9.66039L12.7501 2.98744V5.83333C12.7501 6.31658 13.1418 6.70833 13.6251 6.70833C14.1083 6.70833 14.5001 6.31658 14.5001 5.83333V0.875C14.5001 0.391751 14.1083 0 13.6251 0H8.66672Z"
+            fill="#0055DE"
+          />
+        </svg>
+      </a>
+    )} */}
+        {/* <a id="retry-button" href="/checkout"></a> */}
+        <Link id="retry-button" to="/">
+          Go to Home
+        </Link>
+      </div>
+    );
+  }
 }

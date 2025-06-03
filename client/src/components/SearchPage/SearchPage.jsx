@@ -20,21 +20,23 @@ export default function SearchPage() {
   const [mentorData, setMentorData] = useState([]); // mentor data
   const [loading, setLoading] = useState(false); // loading state
   const [error, setError] = useState(null); // error state
-
+  const [previousSearchTerm, setPreviousSearchTerm] = useState("");
   // Function to fetch search results
-  const getSearchResult = async (term) => {
-    console.log(term);
+  const getSearchResult = async (searchquery) => {
+    if (previousSearchTerm === searchquery) return;
+    setPreviousSearchTerm(searchquery);
     try {
       setLoading(true);
       setError(null); // Reset any previous errors
 
-      const res = await handleSearchResult(term);
-      // console.log(res);
-      if (res === false) {
-        setMentorData(null);
-      } else if (res?.statusCode === 200) {
+      const res = await handleSearchResult(searchquery);
+      console.log(res);
+      if (res?.statusCode?.statusCode === 200) {
         setMentorData(res.data);
-      } else if (res?.statusCode === 404) {
+      } else if (res?.statusCode?.statusCode === 404) {
+        setMentorData(null);
+      } else if (res?.statusCode?.statusCode === 400) {
+        setError("Enter Subject Name");
         setMentorData(null);
       } else {
         throw new Error("Unexpected response from server");
@@ -64,7 +66,7 @@ export default function SearchPage() {
     <>
       <NavBar />
       <div className="mb-8 mt-24">
-        <NavBarSearchInput />
+        <NavBarSearchInput onChange={getSearchResult} />
       </div>
       <ScrollArea className="h-screen  rounded-md border">
         {loading ? (

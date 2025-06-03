@@ -6,13 +6,13 @@ import { Booking } from "../models/booking.model.js";
 import { Mentor } from "../models/mentor.model.js";
 import { Student } from "../models/student.model.js";
 import jwt from "jsonwebtoken"; // Make sure this import exists
-import { decrypt } from "./encryption.controller.js";
+// import { decrypt } from "./encryption.controller.js";
 import mongoose from "mongoose";
+import { encrypt, decrypt } from "../utils/crypto.js";
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY); // Import and initialize Stripe // Imports and initializes Stripe with the secret key
 
 /* Create Payment Intent and retrieve Client Secret */
 const getClientSecret = asyncHandler(async (req, res) => {
-  console.log("hi");
   try {
     const paymentIntent = await stripe.paymentIntents.create({
       amount: 100, // Set the amount in cents (100 cents = 1 USD)
@@ -170,6 +170,83 @@ const getClientSecret = asyncHandler(async (req, res) => {
 //   return total;
 // };
 const paymentIntent = asyncHandler(async (req, res) => {
+  // let i = 0;
+  // console.log("pro: ", i++);
+  const {
+    mentorId,
+    classType,
+    teachingMode,
+    selectedSubject,
+    classDate,
+    selectedClassTime,
+  } = req.body;
+  // console.log(
+  //   "data: ",
+  //   mentorId,
+  //   classType,
+  //   teachingMode,
+  //   selectedSubject,
+  //   classDate,
+  //   selectedClassTime
+  // );
+  // return;
+  if (!classType || !mentorId) {
+    return res
+      .status(400)
+      .json(new ApiError(400, "Please initiate the payment again"));
+  }
+
+  // Check if the ID format is valid (optional if using MongoDB ObjectID validation)
+  if (!mongoose.Types.ObjectId.isValid(mentorId)) {
+    return res.status(400).json(new ApiError(400, "Invalid mentor ID format"));
+  }
+
+  // console.log(mentorId);
+  const mentorDetails = await Mentor.findById(mentorId).select(
+    "-password -refreshToken"
+  );
+
+  // If mentor not found
+  if (!mentorDetails) {
+    return res.status(404).json(new ApiError(404, "Mentor not found"));
+  }
+
+  let classPrice;
+  if (classType === "short") {
+    classPrice = mentorDetails.shortClassPrice;
+  } else if (classType == "long") {
+    classPrice = mentorDetails.monthlyClassPrice;
+  }
+
+  // Important Fix: Stripe expects the amount in cents (multiply by 100)
+  // const amountInCents = classPrice * 100;
+  //encrypt clss data
+  const encryptedClassData = encrypt({
+    mentorId,
+    classType,
+    teachingMode,
+    classPrice,
+    selectedSubject,
+    classDate,
+    selectedClassTime,
+  });
+  //sent cookies
+  const options = {
+    httpOnly: true,
+    secure: false, //In Development: If you're testing this on localhost (HTTP), having secure: true will prevent the cookie from being set, because secure requires HTTPS. In development, you should set the secure flag conditionally.
+    sameSite: "Strict", // Ensures the cookies are sent only from your own site
+  };
+  res.cookie("classData", encryptedClassData, options);
+  // const classData = {
+  //   mentorId,
+  //   classType,
+  //   teachingMode,
+  //   classPrice,
+  //   selectedSubject,
+  //   classDate,
+  //   selectedClassTime,
+  // };
+
   // console.log("req", req.cookies);
   // const { mentorId, classType } = req.body;
   // if (!classType || !mentorId) {
@@ -184,49 +261,35 @@ const paymentIntent = asyncHandler(async (req, res) => {
     const paymentTokenExist =
       req.cookies?.payment ||
       req.header("Authorization")?.replace("Bearer ", "");
+    let decodedPaymentToken;
     if (paymentTokenExist) {
-      const decodedPaymentToken = jwt.verify(
+      decodedPaymentToken = jwt.verify(
         paymentTokenExist,
         process.env.PAYMENT_INTENT_TOKEN_SECRET
       );
+      console.log(decodedPaymentToken?.clientSecret);
       // If the token exists, return it directly without creating a new payment intent
       if (decodedPaymentToken && decodedPaymentToken?.clientSecret) {
-        return res.json({ clientSecret: decodedPaymentToken?.clientSecret });
+        return res.status(200).json(
+          new ApiResponse(
+            200,
+            {
+              clientSecret: decodedPaymentToken?.clientSecret,
+              // classData,
+            },
+            "success"
+          )
+        );
+      } else {
+        console.log("expired");
+        return res.status(401).json(new ApiError(401));
       }
     }
 
-    const { mentorId, classType } = req.body;
-
-    if (!classType || !mentorId) {
-      return res
-        .status(400)
-        .json(new ApiError(400, "Please initiate the payment again"));
-    }
-
-    const decryptedClassType = decrypt(classType);
+    // const decryptedClassType = decrypt(classType);
     // const { mentorId } = req.params;
     // console.log(mentorId);
-    // Check if the ID format is valid (optional if using MongoDB ObjectID validation)
-    if (!mongoose.Types.ObjectId.isValid(mentorId)) {
-      return res
-        .status(400)
-        .json(new ApiError(400, "Invalid mentor ID format"));
-    }
-    // console.log(mentorId);
-    const mentorDetails = await Mentor.findById(mentorId).select(
-      "-password -refreshToken"
-    );
 
-    // If mentor not found
-    if (!mentorDetails) {
-      return res.status(404).json(new ApiError(404, "Mentor not found"));
-    }
-    let classPrice;
-    if (decryptedClassType === "shortclass") {
-      classPrice = mentorDetails.shortClassPrice;
-    } else if (decryptedClassType == "monthlyclass") {
-      classPrice = mentorDetails.monthlyClassPrice;
-    }
     // console.log("classPrice", classPrice);
     // Create a PaymentIntent with the order amount and currency
     const paymentIntent = await stripe.paymentIntents.create({
@@ -244,11 +307,12 @@ const paymentIntent = asyncHandler(async (req, res) => {
         clientSecret: paymentIntent.client_secret,
         mentorId: mentorId,
         studentId: req?.user?._id,
-        classType: decryptedClassType,
+        classType: classType,
       },
       process.env.PAYMENT_INTENT_TOKEN_SECRET,
       { expiresIn: process.env.PAYMENT_INTENT_TOKEN_EXPIRY }
     );
+    console.log("hi10");
     // console.log(paymentToken);
     //sent cookies
     const options = {
@@ -257,13 +321,30 @@ const paymentIntent = asyncHandler(async (req, res) => {
       sameSite: "Strict", // Ensures the cookies are sent only from your own site
     };
     res.cookie("payment", paymentToken, options);
-    return res.send({
-      clientSecret: paymentIntent.client_secret,
-      // // [DEV]: For demo purposes only, you should avoid exposing the PaymentIntent ID in the client-side code.
-      // dpmCheckerLink: `https://dashboard.stripe.com/settings/payment_methods/review?transaction_id=${paymentIntent.id}`,
-    });
+
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        {
+          clientSecret: paymentIntent?.client_secret,
+        },
+        "success"
+      )
+    );
   } catch (error) {
     console.error("PaymentIntent error:", error);
+    // If token is expired
+    if (error.name === "TokenExpiredError") {
+      // Clear the payment cookie
+      res.clearCookie("payment");
+
+      // Respond with a message asking the user to restart the payment process
+      return res
+        .status(401)
+        .json(
+          new ApiError(401, "Session expired. Please start the payment again.")
+        );
+    }
     return res
       .status(500)
       .json(new ApiError(500, "An error occurred while creating the payment"));
@@ -272,14 +353,21 @@ const paymentIntent = asyncHandler(async (req, res) => {
 
 const storeStudentDataonSuccessfullPayment = asyncHandler(async (req, res) => {
   // console.log("hi");
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, "Booking created successfully"));
+  res.clearCookie("payment");
   const { id, amount } = req.body;
-  const studentDetails = req.user;
+  // const studentDetails = req.user;
 
   try {
-    const paymentToken =
-      req.cookies?.payment ||
+    // const paymentToken =
+    //   req.cookies?.payment ||
+    //   req.header("Authorization")?.replace("Bearer ", "");
+    const classDataExist =
+      req.cookies?.classData ||
       req.header("Authorization")?.replace("Bearer ", "");
-    if (!paymentToken) {
+    if (!classDataExist) {
       return res
         .status(401)
         .json(
@@ -289,12 +377,27 @@ const storeStudentDataonSuccessfullPayment = asyncHandler(async (req, res) => {
           )
         );
     }
-    const decodedToken = jwt.verify(
-      paymentToken,
-      process.env.PAYMENT_INTENT_TOKEN_SECRET
-    );
-    // console.log("decodedToken", decodedToken);
-    const { mentorId, classType, studentId } = decodedToken;
+    //class data
+    let classData;
+    if (classDataExist) {
+      classData = decrypt(classDataExist);
+    }
+    const {
+      mentorId,
+      classType,
+      teachingMode,
+      classPrice,
+      selectedSubject,
+      classDate,
+      selectedClassTime,
+    } = classData;
+
+    // const decodedToken = jwt.verify(
+    //   paymentToken,
+    //   process.env.PAYMENT_INTENT_TOKEN_SECRET
+    // );
+    // console.log("decodedToken afer payment", decodedToken);
+    // const { mentorId, classType, mode } = decodedToken;
     // Get mentor and student details
     const mentorDetails = await Mentor.findById(mentorId).select(
       "-password -refreshToken"
@@ -309,40 +412,47 @@ const storeStudentDataonSuccessfullPayment = asyncHandler(async (req, res) => {
     //   return res.status(404).json(new ApiError(404, "Student not found"));
     // }
     // Prepare the booking data
+    // Extract the date part (e.g., "2025-06-04")
+    const datePart = classDate.split("T")[0];
+    const [start, end] = "05:38|08:38".split("|");
+
+    // Convert start and end to Date objects on the same day
+    const [startHour, startMinute] = start.split(":").map(Number);
+    const [endHour, endMinute] = end.split(":").map(Number);
+
+    const startTime = new Date(classDate);
+    startTime.setUTCHours(startHour, startMinute, 0, 0); // Adjust if you're using local time
+
+    const endTime = new Date(classDate);
+    endTime.setUTCHours(endHour, endMinute, 0, 0);
+
     const bookingData = {
       classType,
-      bookingTime: new Date("2024-11-20T14:00:00"), // Assuming the booking time is now
-      studentDetails: {
-        studentId: studentDetails._id,
-        studentName: studentDetails.name,
-        studentEmail: studentDetails.email,
-        studentPhoneNumber: studentDetails.phoneNumber,
-      },
-      mentorDetails: {
-        mentorId: mentorDetails._id,
-        mentorName: mentorDetails.name,
-        mentorEmail: mentorDetails.email,
-      },
-      paymentInformation: {
+      // bookingTime: new Date("2024-11-20T14:00:00"), // Assuming the booking time is now
+      mode: teachingMode,
+      subject: selectedSubject,
+      studentId: req?.user?._id,
+      mentorId: mentorId,
+      scheduledDate: new Date(classDate), // Assuming classDate and selectedClassTime are in the correct format
+      scheduledStartTime: startTime,
+      scheduledEndTime: endTime,
+      durationMinutes:
+        classType === "short"
+          ? mentorDetails.shortClassDuration
+          : mentorDetails.monthlyClassDuration,
+      paymentInfo: {
         paymentId: id, // Assuming `payment` contains the payment ID
         amountPaid: amount, // You can get the actual amount paid based on classType or payment details
-        paymentStatus: "successful", // Assuming payment was successful
+        paymentStatus: "paid", // Assuming payment was successful
       },
-      classStatus: "active", // Set the initial class status
     };
+    console.log("Booking date: ", bookingData);
     // Create a new Booking document
     const newBooking = await Booking.create(bookingData);
-    //clear cookies
-    const options = {
-      httpOnly: true,
-      secure: false, //In Development: If you're testing this on localhost (HTTP), having secure: true will prevent the cookie from being set, because secure requires HTTPS. In development, you should set the secure flag conditionally.
-      sameSite: "Strict", // Ensures the cookies are sent only from your own site
-    };
-    res.clearCookie("payment", options);
+    console.log("newBooking", newBooking);
     // Send response with booking information
     return res.status(201).json({
       message: "Booking created successfully",
-      booking: newBooking,
     });
   } catch (error) {
     throw new ApiError(401, error?.message || "Invalid Access Token");
