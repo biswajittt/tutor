@@ -205,6 +205,7 @@ export default function MentorAvailability({
     //   classDate
     // );
   };
+  // console.log("ddd: ", dayAvailability[selectedDayIndex]);
   return (
     <div
       id="drawer-swipe"
@@ -235,7 +236,7 @@ export default function MentorAvailability({
         </h5>
       </div>
       <div class="p-6">
-        <h2 class="text-xl text-gray-900 dark:text-white font-bold mb-2">
+        {/* <h2 class="text-xl text-gray-900 dark:text-white font-bold mb-2">
           Digital Transformation
         </h2>
         <div class="flex items-center space-x-4 rtl:space-x-reverse mb-3">
@@ -279,7 +280,7 @@ export default function MentorAvailability({
               California, USA
             </span>
           </div>
-        </div>
+        </div> */}
         <div class="flext justify-center pt-5 border-t border-gray-200 dark:border-gray-800 flex sm:flex-row flex-col sm:space-x-5">
           <div class="block max-w-sm p-6 bg-white border border-solid border-gray-200 rounded-lg shadow-sm">
             <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
@@ -467,9 +468,7 @@ export default function MentorAvailability({
                     </p>
                   )
                 ) : (
-                  <p>
-                    {dayAvailability[selectedDayIndex]?.day} is not available.
-                  </p>
+                  <p className="text-center">Not available</p>
                 )}
               </ul>
             </div>
@@ -477,7 +476,7 @@ export default function MentorAvailability({
 
           <div class="block max-w-sm p-6 bg-white border border-solid border-gray-200 rounded-lg shadow-sm">
             <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-              Choose Your Availability
+              Subject & Teaching Mode
             </h5>
             <div>
               <h5 class="text-center mt-4 mb-2 text-md font-bold tracking-tight text-gray-900 ">

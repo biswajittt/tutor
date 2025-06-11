@@ -149,44 +149,83 @@ export const logoutStudent = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, null, "Logout successful"));
 });
 
-// **Get booking data by mentor and student id**
-export const getBookingsByStudentAndMentor = asyncHandler(async (req, res) => {
-  // console.log("hi888");
-  const { mentorId } = req.body;
-  const { _id } = req.user;
-  const studentId = _id;
-  // console.log(studentId);
-  // console.log(mentorId);
-  if (!studentId || !mentorId) {
-    throw new ApiError(400, "Student ID and Mentor ID are required.");
-  }
-  // Find the active booking for the given student and mentor
-  const activeBooking = await Booking.findOne({
-    studentId,
-    mentorId,
-    classStatus: { $in: ["scheduled", "started"] },
-  });
-  // console.log(activeBooking);
-  if (!activeBooking) {
-    return res
-      .status(200)
-      .json(
-        new ApiResponse(
-          404,
-          null,
-          "No active booking found for this student and mentor."
-        )
-      );
+// ** get all bokings by student id**
+export const getAllBookingsByStudentId = asyncHandler(async (req, res) => {
+  const { _id: studentId } = req.user;
+
+  // **🔹 Validate Student ID**
+  if (!studentId) {
+    throw new ApiError(400, "Student ID is required.");
   }
 
+  // **🔹 Find Bookings by Student ID**
+  const bookings = await Booking.find({ studentId });
+  // console.log(bookings);
+  // **🔹 Check if Bookings Exist**
+  if (!bookings || bookings.length === 0) {
+    return res
+      .status(404)
+      .json(new ApiResponse(404, null, "No bookings found for this student."));
+  }
+  // 1. Filter for "Active/Upcoming" bookings (status: "scheduled" or "started")
+  const activeOrUpcomingBookings = bookings.filter((booking) =>
+    ["scheduled", "started"].includes(booking.classStatus)
+  );
+
+  // 2. Filter for "Completed" bookings
+  const completedBookings = bookings.filter(
+    (booking) => booking.classStatus === "completed"
+  );
+  // **🔹 Send Response**
   return res
     .status(200)
     .json(
       new ApiResponse(
         200,
-        activeBooking,
-        "Active booking data retrieved successfully."
+        { activeOrUpcomingBookings, completedBookings },
+        "Bookings retrieved successfully."
       )
     );
 });
+
+// // **Get booking data by mentor and student id**
+// export const getBookingsByStudentAndMentor = asyncHandler(async (req, res) => {
+//   // console.log("hi888");
+//   const { mentorId } = req.body;
+//   const { _id } = req.user;
+//   const studentId = _id;
+//   // console.log(studentId);
+//   // console.log(mentorId);
+//   if (!studentId || !mentorId) {
+//     throw new ApiError(400, "Student ID and Mentor ID are required.");
+//   }
+//   // Find the active booking for the given student and mentor
+//   const activeBooking = await Booking.findOne({
+//     studentId,
+//     mentorId,
+//     classStatus: { $in: ["scheduled", "started"] },
+//   });
+//   // console.log(activeBooking);
+//   if (!activeBooking) {
+//     return res
+//       .status(200)
+//       .json(
+//         new ApiResponse(
+//           404,
+//           null,
+//           "No active booking found for this student and mentor."
+//         )
+//       );
+//   }
+
+//   return res
+//     .status(200)
+//     .json(
+//       new ApiResponse(
+//         200,
+//         activeBooking,
+//         "Active booking data retrieved successfully."
+//       )
+//     );
+// });
 // export { registerStudent, loginStudent };

@@ -1,53 +1,110 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import useAuth from "../../../../handler/useAuth.js";
+import fetchingBookingsByStudentId from "@/handler/fetching/fetchingBookingsByStudentId.js";
 export default function BookingandClasses() {
   const { isAuthenticated, user } = useAuth();
-  console.log(user);
-  const [classData, setClassdata] = useState(user);
+  // console.log(user);
+  const [activeClassData, setActiveClassData] = useState(null);
+  const [completedClassData, setCompletedClassData] = useState(null);
+  const fetchBookings = async () => {
+    const res = await fetchingBookingsByStudentId();
+    // console.log(res?.data?.data);
+    setActiveClassData(res?.data?.data?.activeOrUpcomingBookings);
+    setCompletedClassData(res?.data?.data?.completedBookings || []);
+  };
+  useEffect(() => {
+    fetchBookings();
+  }, []);
+
   return (
     <div>
-      <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+      <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-64">
+        <h1 class="text-center mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-xl lg:text-2xl dark:text-white">
+          Active Classes
+        </h1>
         <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
               <th scope="col" class="px-6 py-3">
-                Class name
+                Subject
               </th>
               <th scope="col" class="px-6 py-3">
-                Color
+                Type
               </th>
               <th scope="col" class="px-6 py-3">
-                Category
+                Scheduled Date
               </th>
               <th scope="col" class="px-6 py-3">
-                Price
+                Start Time
+              </th>
+
+              <th scope="col" class="px-6 py-3">
+                End Time
               </th>
               <th scope="col" class="px-6 py-3">
-                Action
+                Status
               </th>
             </tr>
           </thead>
           <tbody>
-            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-              <th
-                scope="row"
-                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-              >
-                Apple MacBook Pro 17"
-              </th>
-              <td class="px-6 py-4">Silver</td>
-              <td class="px-6 py-4">Laptop</td>
-              <td class="px-6 py-4">$2999</td>
-              <td class="px-6 py-4">
-                <a
-                  href="#"
-                  class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+            {activeClassData && activeClassData.length > 0 ? (
+              activeClassData.map((data, index) => (
+                <tr
+                  class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                  key={data._id}
                 >
-                  Edit
-                </a>
-              </td>
-            </tr>
-            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                  <th
+                    scope="row"
+                    class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                  >
+                    {data?.subject}
+                  </th>
+                  <td class="px-6 py-4">
+                    {data?.classType.charAt(0).toUpperCase() +
+                      data?.classType.slice(1)}
+                  </td>
+                  <td class="px-6 py-4">
+                    {new Date(data?.scheduledDate).toLocaleDateString("en-GB", {
+                      day: "numeric",
+                      month: "long",
+                      year: "numeric",
+                    })}
+                  </td>
+                  <td class="px-6 py-4">
+                    {new Date(data?.scheduledStartTime).toLocaleTimeString(
+                      "en-IN",
+                      { hour: "numeric", minute: "numeric", hour12: true }
+                    )}
+                  </td>
+                  <td class="px-6 py-4">
+                    {new Date(data?.scheduledEndTime).toLocaleTimeString(
+                      "en-IN",
+                      { hour: "numeric", minute: "numeric", hour12: true }
+                    )}
+                  </td>
+                  <td class="px-6 py-4">
+                    <span class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+                      {data?.classStatus.charAt(0).toUpperCase() +
+                        data?.classStatus.slice(1)}
+                    </span>
+                  </td>
+                  {/* <td class="px-6 py-4">
+                      <a
+                        href="#"
+                        class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                      >
+                        Edit
+                      </a>
+                    </td> */}
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <span className="text-center p-4">Nothing to show</span>
+              </tr>
+            )}
+
+            {/* <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
               <th
                 scope="row"
                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
@@ -84,364 +141,95 @@ export default function BookingandClasses() {
                   Edit
                 </a>
               </td>
-            </tr>
+            </tr> */}
           </tbody>
         </table>
       </div>
+      <hr class="w-48 h-[0.12rem] mx-auto border solid my-4 bg-gray-500 border-0 rounded-sm md:my-8" />
       {/* old classes */}
 
       <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-        <div class="flex items-center justify-between flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4 bg-white dark:bg-gray-900">
-          <div>
-            <button
-              id="dropdownActionButton"
-              data-dropdown-toggle="dropdownAction"
-              class="inline-flex items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-1.5 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
-              type="button"
-            >
-              <span class="sr-only">Action button</span>
-              Action
-              <svg
-                class="w-2.5 h-2.5 ms-2.5"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 10 6"
-              >
-                <path
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="m1 1 4 4 4-4"
-                />
-              </svg>
-            </button>
-            <div
-              id="dropdownAction"
-              class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600"
-            >
-              <ul
-                class="py-1 text-sm text-gray-700 dark:text-gray-200"
-                aria-labelledby="dropdownActionButton"
-              >
-                <li>
-                  <a
-                    href="#"
-                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                  >
-                    Reward
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                  >
-                    Promote
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                  >
-                    Activate account
-                  </a>
-                </li>
-              </ul>
-              <div class="py-1">
-                <a
-                  href="#"
-                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-                >
-                  Delete User
-                </a>
-              </div>
-            </div>
-          </div>
-          <label for="table-search" class="sr-only">
-            Search
-          </label>
-          <div class="relative">
-            <div class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
-              <svg
-                class="w-4 h-4 text-gray-500 dark:text-gray-400"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                />
-              </svg>
-            </div>
-            <input
-              type="text"
-              id="table-search-users"
-              class="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="Search for users"
-            />
-          </div>
-        </div>
+        <h1 class=" mt-2 text-center mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-xl lg:text-2xl dark:text-white">
+          Previous Classes
+        </h1>
         <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
-              <th scope="col" class="p-4">
-                <div class="flex items-center">
-                  <input
-                    id="checkbox-all-search"
-                    type="checkbox"
-                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                  />
-                  <label for="checkbox-all-search" class="sr-only">
-                    checkbox
-                  </label>
-                </div>
+              <th scope="col" class="px-6 py-3">
+                Subject
               </th>
               <th scope="col" class="px-6 py-3">
-                Name
+                Type
               </th>
               <th scope="col" class="px-6 py-3">
-                Position
+                Scheduled Date
+              </th>
+              <th scope="col" class="px-6 py-3">
+                Start Time
+              </th>
+
+              <th scope="col" class="px-6 py-3">
+                End Time
               </th>
               <th scope="col" class="px-6 py-3">
                 Status
               </th>
-              <th scope="col" class="px-6 py-3">
-                Action
-              </th>
             </tr>
           </thead>
           <tbody>
-            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-              <td class="w-4 p-4">
-                <div class="flex items-center">
-                  <input
-                    id="checkbox-table-search-1"
-                    type="checkbox"
-                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                  />
-                  <label for="checkbox-table-search-1" class="sr-only">
-                    checkbox
-                  </label>
-                </div>
-              </td>
-              <th
-                scope="row"
-                class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white"
-              >
-                <img
-                  class="w-10 h-10 rounded-full"
-                  src="/docs/images/people/profile-picture-1.jpg"
-                  alt="Jese image"
-                />
-                <div class="ps-3">
-                  <div class="text-base font-semibold">Neil Sims</div>
-                  <div class="font-normal text-gray-500">
-                    neil.sims@flowbite.com
-                  </div>
-                </div>
-              </th>
-              <td class="px-6 py-4">React Developer</td>
-              <td class="px-6 py-4">
-                <div class="flex items-center">
-                  <div class="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div>{" "}
-                  Online
-                </div>
-              </td>
-              <td class="px-6 py-4">
-                <a
-                  href="#"
-                  class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+            {completedClassData === null ? (
+              <tr>
+                <span className="text-center px-4">Loading...</span>
+              </tr>
+            ) : completedClassData.length === 0 ? (
+              <tr>
+                <span className="text-center px-4">Nothing to Show</span>
+              </tr>
+            ) : (
+              completedClassData &&
+              completedClassData.length > 0 &&
+              completedClassData.map((data, index) => (
+                <tr
+                  class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                  key={data._id}
                 >
-                  Edit user
-                </a>
-              </td>
-            </tr>
-            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-              <td class="w-4 p-4">
-                <div class="flex items-center">
-                  <input
-                    id="checkbox-table-search-2"
-                    type="checkbox"
-                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                  />
-                  <label for="checkbox-table-search-2" class="sr-only">
-                    checkbox
-                  </label>
-                </div>
-              </td>
-              <th
-                scope="row"
-                class="flex items-center px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-              >
-                <img
-                  class="w-10 h-10 rounded-full"
-                  src="/docs/images/people/profile-picture-3.jpg"
-                  alt="Jese image"
-                />
-                <div class="ps-3">
-                  <div class="text-base font-semibold">Bonnie Green</div>
-                  <div class="font-normal text-gray-500">
-                    bonnie@flowbite.com
-                  </div>
-                </div>
-              </th>
-              <td class="px-6 py-4">Designer</td>
-              <td class="px-6 py-4">
-                <div class="flex items-center">
-                  <div class="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div>{" "}
-                  Online
-                </div>
-              </td>
-              <td class="px-6 py-4">
-                <a
-                  href="#"
-                  class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                >
-                  Edit user
-                </a>
-              </td>
-            </tr>
-            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-              <td class="w-4 p-4">
-                <div class="flex items-center">
-                  <input
-                    id="checkbox-table-search-2"
-                    type="checkbox"
-                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                  />
-                  <label for="checkbox-table-search-2" class="sr-only">
-                    checkbox
-                  </label>
-                </div>
-              </td>
-              <th
-                scope="row"
-                class="flex items-center px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-              >
-                <img
-                  class="w-10 h-10 rounded-full"
-                  src="/docs/images/people/profile-picture-2.jpg"
-                  alt="Jese image"
-                />
-                <div class="ps-3">
-                  <div class="text-base font-semibold">Jese Leos</div>
-                  <div class="font-normal text-gray-500">jese@flowbite.com</div>
-                </div>
-              </th>
-              <td class="px-6 py-4">Vue JS Developer</td>
-              <td class="px-6 py-4">
-                <div class="flex items-center">
-                  <div class="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div>{" "}
-                  Online
-                </div>
-              </td>
-              <td class="px-6 py-4">
-                <a
-                  href="#"
-                  class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                >
-                  Edit user
-                </a>
-              </td>
-            </tr>
-            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-              <td class="w-4 p-4">
-                <div class="flex items-center">
-                  <input
-                    id="checkbox-table-search-2"
-                    type="checkbox"
-                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                  />
-                  <label for="checkbox-table-search-2" class="sr-only">
-                    checkbox
-                  </label>
-                </div>
-              </td>
-              <th
-                scope="row"
-                class="flex items-center px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-              >
-                <img
-                  class="w-10 h-10 rounded-full"
-                  src="/docs/images/people/profile-picture-5.jpg"
-                  alt="Jese image"
-                />
-                <div class="ps-3">
-                  <div class="text-base font-semibold">Thomas Lean</div>
-                  <div class="font-normal text-gray-500">
-                    thomes@flowbite.com
-                  </div>
-                </div>
-              </th>
-              <td class="px-6 py-4">UI/UX Engineer</td>
-              <td class="px-6 py-4">
-                <div class="flex items-center">
-                  <div class="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div>{" "}
-                  Online
-                </div>
-              </td>
-              <td class="px-6 py-4">
-                <a
-                  href="#"
-                  class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                >
-                  Edit user
-                </a>
-              </td>
-            </tr>
-            <tr class="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600">
-              <td class="w-4 p-4">
-                <div class="flex items-center">
-                  <input
-                    id="checkbox-table-search-3"
-                    type="checkbox"
-                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                  />
-                  <label for="checkbox-table-search-3" class="sr-only">
-                    checkbox
-                  </label>
-                </div>
-              </td>
-              <th
-                scope="row"
-                class="flex items-center px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-              >
-                <img
-                  class="w-10 h-10 rounded-full"
-                  src="/docs/images/people/profile-picture-4.jpg"
-                  alt="Jese image"
-                />
-                <div class="ps-3">
-                  <div class="text-base font-semibold">Leslie Livingston</div>
-                  <div class="font-normal text-gray-500">
-                    leslie@flowbite.com
-                  </div>
-                </div>
-              </th>
-              <td class="px-6 py-4">SEO Specialist</td>
-              <td class="px-6 py-4">
-                <div class="flex items-center">
-                  <div class="h-2.5 w-2.5 rounded-full bg-red-500 me-2"></div>{" "}
-                  Offline
-                </div>
-              </td>
-              <td class="px-6 py-4">
-                <a
-                  href="#"
-                  class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                >
-                  Edit user
-                </a>
-              </td>
-            </tr>
+                  <th
+                    scope="row"
+                    class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                  >
+                    {data?.subject}
+                  </th>
+                  <td class="px-6 py-4">
+                    {data?.classType.charAt(0).toUpperCase() +
+                      data?.classType.slice(1)}
+                  </td>
+                  <td class="px-6 py-4">
+                    {new Date(data?.scheduledDate).toLocaleDateString("en-GB", {
+                      day: "numeric",
+                      month: "long",
+                      year: "numeric",
+                    })}
+                  </td>
+                  <td class="px-6 py-4">
+                    {new Date(data?.scheduledStartTime).toLocaleTimeString(
+                      "en-IN",
+                      { hour: "numeric", minute: "numeric", hour12: true }
+                    )}
+                  </td>
+                  <td class="px-6 py-4">
+                    {new Date(data?.scheduledEndTime).toLocaleTimeString(
+                      "en-IN",
+                      { hour: "numeric", minute: "numeric", hour12: true }
+                    )}
+                  </td>
+                  <td class="px-6 py-4">
+                    <span class="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-gray-700 dark:text-gray-300">
+                      Done
+                    </span>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

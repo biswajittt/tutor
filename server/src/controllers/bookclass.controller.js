@@ -353,9 +353,6 @@ const paymentIntent = asyncHandler(async (req, res) => {
 
 const storeStudentDataonSuccessfullPayment = asyncHandler(async (req, res) => {
   // console.log("hi");
-  return res
-    .status(200)
-    .json(new ApiResponse(200, {}, "Booking created successfully"));
   res.clearCookie("payment");
   const { id, amount } = req.body;
   // const studentDetails = req.user;
@@ -391,7 +388,6 @@ const storeStudentDataonSuccessfullPayment = asyncHandler(async (req, res) => {
       classDate,
       selectedClassTime,
     } = classData;
-
     // const decodedToken = jwt.verify(
     //   paymentToken,
     //   process.env.PAYMENT_INTENT_TOKEN_SECRET
@@ -414,7 +410,7 @@ const storeStudentDataonSuccessfullPayment = asyncHandler(async (req, res) => {
     // Prepare the booking data
     // Extract the date part (e.g., "2025-06-04")
     const datePart = classDate.split("T")[0];
-    const [start, end] = "05:38|08:38".split("|");
+    const [start, end] = selectedClassTime.split("|");
 
     // Convert start and end to Date objects on the same day
     const [startHour, startMinute] = start.split(":").map(Number);
@@ -450,10 +446,11 @@ const storeStudentDataonSuccessfullPayment = asyncHandler(async (req, res) => {
     // Create a new Booking document
     const newBooking = await Booking.create(bookingData);
     console.log("newBooking", newBooking);
+    res.clearCookie("classData");
     // Send response with booking information
-    return res.status(201).json({
-      message: "Booking created successfully",
-    });
+    return res
+      .status(200)
+      .json(new ApiResponse(200, {}, "Booking created successfully"));
   } catch (error) {
     throw new ApiError(401, error?.message || "Invalid Access Token");
   }

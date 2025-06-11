@@ -180,7 +180,7 @@ export default function Mentor() {
   const showMentorAvailabilityCardHandler = (value) => {
     setShowMentorAvailability(value);
   };
-
+  // console.log("dsdsds", mentorDetails?.mode);
   return (
     <>
       {/* {openMessageBox === true ? <MessageBox /> : null} */}
