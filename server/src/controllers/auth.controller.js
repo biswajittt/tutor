@@ -3,7 +3,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { Mentor } from "../models/mentor.model.js";
 import { Student } from "../models/student.model.js";
-import jwt from "jsonwebtoken"; // Make sure this import exists
+import jwt from "jsonwebtoken"; // Make sure this import exists//
 
 export const checkIfLoggedIn = asyncHandler(async (req, res) => {
   try {
