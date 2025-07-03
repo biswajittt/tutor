@@ -152,7 +152,6 @@ export const logoutStudent = asyncHandler(async (req, res) => {
 // ** get all bokings by student id**
 export const getAllBookingsByStudentId = asyncHandler(async (req, res) => {
   const { _id: studentId } = req.user;
-
   // **🔹 Validate Student ID**
   if (!studentId) {
     throw new ApiError(400, "Student ID is required.");
@@ -160,29 +159,44 @@ export const getAllBookingsByStudentId = asyncHandler(async (req, res) => {
 
   // **🔹 Find Bookings by Student ID**
   const bookings = await Booking.find({ studentId });
-  // console.log(bookings);
   // **🔹 Check if Bookings Exist**
   if (!bookings || bookings.length === 0) {
     return res
       .status(404)
       .json(new ApiResponse(404, null, "No bookings found for this student."));
   }
+  const now = new Date(); // Get current time for comparison
   // 1. Filter for "Active/Upcoming" bookings (status: "scheduled" or "started")
-  const activeOrUpcomingBookings = bookings.filter((booking) =>
-    ["scheduled", "started"].includes(booking.classStatus)
-  );
-
+  const activeOrUpcomingBookings = bookings.filter((booking) => {
+    // Only consider 'scheduled' or 'started' for upcoming
+    if (["scheduled", "started"].includes(booking.classStatus)) {
+      // Check if the scheduled end time is still in the future
+      return booking.scheduledEndTime && booking.scheduledEndTime > now;
+    }
+    return false; // Not scheduled/started, or time has passed
+  });
+  // console.log(activeOrUpcomingBookings);
   // 2. Filter for "Completed" bookings
-  const completedBookings = bookings.filter(
-    (booking) => booking.classStatus === "completed"
-  );
+  const pastBookings = bookings.filter((booking) => {
+    const isCompletedOrCanceled = ["completed", "canceled"].includes(
+      booking.classStatus
+    );
+
+    const isScheduledOrStartedButPast =
+      ["scheduled", "started"].includes(booking.classStatus) &&
+      booking.scheduledEndTime &&
+      booking.scheduledEndTime <= now; // Class end time is today or in the past
+
+    return isCompletedOrCanceled || isScheduledOrStartedButPast;
+  });
+  // console.log(pastBookings);
   // **🔹 Send Response**
   return res
     .status(200)
     .json(
       new ApiResponse(
         200,
-        { activeOrUpcomingBookings, completedBookings },
+        { activeOrUpcomingBookings, pastBookings },
         "Bookings retrieved successfully."
       )
     );

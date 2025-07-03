@@ -76,6 +76,11 @@ const bookingSchema = new Schema(
       },
       paymentDate: { type: Date, default: Date.now },
     },
+    review: {
+      type: String,
+      default: null, // Initially no review
+      trim: true, // Removes leading/trailing whitespace
+    },
   },
   { timestamps: true }
 );

@@ -8,9 +8,10 @@ export default function BookingandClasses() {
   const [completedClassData, setCompletedClassData] = useState(null);
   const fetchBookings = async () => {
     const res = await fetchingBookingsByStudentId();
-    // console.log(res?.data?.data);
-    setActiveClassData(res?.data?.data?.activeOrUpcomingBookings);
-    setCompletedClassData(res?.data?.data?.completedBookings || []);
+    console.log(res?.data?.data);
+    setActiveClassData(res?.data?.data?.activeOrUpcomingBookings || []);
+    setCompletedClassData(res?.data?.data?.pastBookings || []);
+    console.log(res?.data?.data?.pastBookings);
   };
   useEffect(() => {
     fetchBookings();
@@ -100,7 +101,11 @@ export default function BookingandClasses() {
               ))
             ) : (
               <tr>
-                <span className="text-center p-4">Nothing to show</span>
+                <td colspan="6" class="text-center p-4">
+                  No Active Classes
+                </td>
+
+                {/* <div className="block text-center p-4">Nothing to show</div> */}
               </tr>
             )}
 
@@ -174,6 +179,9 @@ export default function BookingandClasses() {
               <th scope="col" class="px-6 py-3">
                 Status
               </th>
+              <th scope="col" class="px-6 py-3">
+                Review
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -183,7 +191,9 @@ export default function BookingandClasses() {
               </tr>
             ) : completedClassData.length === 0 ? (
               <tr>
-                <span className="text-center px-4">Nothing to Show</span>
+                <td colspan="6" class="text-center p-4">
+                  Nothing to show
+                </td>
               </tr>
             ) : (
               completedClassData &&
@@ -226,6 +236,15 @@ export default function BookingandClasses() {
                     <span class="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-gray-700 dark:text-gray-300">
                       Done
                     </span>
+                  </td>
+                  <td class="px-6 py-4">
+                    <span class="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-indigo-900 dark:text-indigo-300">
+                      Given
+                    </span>
+
+                    <a class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                      Write
+                    </a>
                   </td>
                 </tr>
               ))

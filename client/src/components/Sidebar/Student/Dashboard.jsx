@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, Outlet } from "react-router-dom";
 import { useOutletContext } from "react-router-dom";
 export default function Dashboard() {
   const { isAuthenticated, user, userType } = useOutletContext();
   console.log(isAuthenticated);
+  const [showDropdown, setShowDropdown] = useState(false);
   return (
     <>
       <nav class="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
@@ -33,11 +34,11 @@ export default function Dashboard() {
                 </svg>
               </button>
               <Link to="/" class="flex ms-2 md:me-24">
-                <img
+                {/* <img
                   src="https://flowbite.com/docs/images/logo.svg"
                   class="h-8 me-3"
                   alt="FlowBite Logo"
-                />
+                /> */}
                 <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">
                   Learnerby
                 </span>
@@ -53,11 +54,14 @@ export default function Dashboard() {
                     data-dropdown-toggle="dropdown-user"
                   >
                     <span class="sr-only">Open user menu</span>
-                    <img
+                    {/* <img
                       class="w-8 h-8 rounded-full"
                       src="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
                       alt="user photo"
-                    />
+                    /> */}
+                    <span class="flex items-center justify-center w-8 h-8 rounded-full bg-gray-600 text-white font-semibold text-lg">
+                      {user?.name.charAt(0).toUpperCase()}
+                    </span>
                   </button>
                 </div>
                 <div
@@ -202,7 +206,7 @@ export default function Dashboard() {
                 <span class="flex-1 ms-3 whitespace-nowrap">Messages</span>
               </Link>
             </li>
-            <li>
+            {/* <li>
               <Link
                 to="/student/dashboard/connections"
                 class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
@@ -218,8 +222,8 @@ export default function Dashboard() {
                 </svg>
                 <span class="flex-1 ms-3 whitespace-nowrap">Connections</span>
               </Link>
-            </li>
-            <li>
+            </li> */}
+            {/* <li>
               <a
                 href="#"
                 class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
@@ -241,8 +245,8 @@ export default function Dashboard() {
                 </svg>
                 <span class="flex-1 ms-3 whitespace-nowrap">Sign In</span>
               </a>
-            </li>
-            <li>
+            </li> */}
+            {/* <li>
               <a
                 href="#"
                 class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
@@ -260,7 +264,7 @@ export default function Dashboard() {
                 </svg>
                 <span class="flex-1 ms-3 whitespace-nowrap">Sign Up</span>
               </a>
-            </li>
+            </li> */}
           </ul>
         </div>
       </aside>
